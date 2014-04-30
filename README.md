@@ -1,4 +1,4 @@
 stormpath-cli
 =============
 
-A Ruby-based command-line client for Stormpath
+A Python-based command-line client for Stormpath
