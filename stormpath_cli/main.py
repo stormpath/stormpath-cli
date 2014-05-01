@@ -1,62 +1,89 @@
 #!/usr/bin/env python
 
-"""Usage:
-    stormpath [<action>] [<resource>] [options]
+"""Usage: stormpath [<action>] [<resource>] [options]
 
-    Use Stormpath CLI to communicate with the Stormpath REST API.
+A command-line client for the Stormpath REST API (https://stormpath.com).
 
-    Actions:
-      list    List resources on Stormpath
-      create  Create a resource on Stormpath
-      update  Update a resource on Stormpath
-      delete  Remove a resource from Stormpath
-      set     Set context for user/group actions
+Actions:
+    list    List resources on Stormpath
+    create  Create a resource on Stormpath
+    update  Update a resource on Stormpath
+    delete  Remove a resource from Stormpath
+    set     Set context for user/group actions
 
-    Resources:
-      application    Application Resource
-      directory      Directory Resource
-      group          Group Resource
-      account        Account Resource
-      user           User Resource
+Resources:
+    application    Application Resource
+    directory      Directory Resource
+    group          Group Resource
+    account        Account Resource
+    user           User Resource
 
+Options:
+    -h --help                               Lists help
 
-    Options:
-      -h --help     Lists help
-
+    -a <key:secret>, --apikey <key:secret>  Authenticate with provided key and secret
+    -k <file>, --apikeyfile <file>          Use credentials from <file>
+    -L, --show-links                        Show links to related resources
+    -H, --show-headers                      If in TSV mode, show column headers in the first line
 """
-import sys
-import json
-from os.path import expanduser, join
-from docopt import docopt, DocoptExit
-from stormpath.client import Client
-from inspect import getdoc
-from stormpath_cli import actions, resources
 
-import logging
-logging.basicConfig(format='%(message)s', level=logging.INFO)
-log = logging.getLogger(__name__)
-# Disable requests logging
-logging.getLogger("requests").propagate = False
+from docopt import docopt
+from stormpath.client import Client
+
+from stormpath_cli.actions import AVAILABLE_ACTIONS, DEFAULT_ACTION
+from stormpath_cli.auth import setup_api_key
+from stormpath_cli.resources import AVAILABLE_RESOURCES
+from stormpath_cli.output import output, setup_output
 
 
 def main():
+    log = setup_output()
+
     arguments = docopt(__doc__)
     action = arguments.get('<action>')
     resource = arguments.get('<resource>')
 
-    if action and action not in actions.AVAILABLE_ACTIONS.keys():
-        raise DocoptExit('Invalid Action. Please specify a valid action!')
+    if action in AVAILABLE_RESOURCES and not resource:
+      resource = action
+      action = DEFAULT_ACTION
 
-    if resource not in resources.AVAILABLE_RESOURCES.keys():
-        raise DocoptExit('Invalid object. Please specify a valid resource!')
+    if not action:
+        log.error(__doc__.strip('\n'))
+        return -1
 
-    api_key_file = join(expanduser("~"), '.stormpath', 'apiKey.properties')
-    client = Client(api_key_file_location=api_key_file)
+    if action not in AVAILABLE_ACTIONS:
+        log.error("Unknown action '%s'. See 'stormpath --help' for list of " \
+            "available actions." % action)
+        return -1
 
-    command = actions.dispatch(action)
-    ret = command(client, resource)
-    # this will need to log json or tab-delimited text if piped
-    log.info(ret)
+    if not resource:
+        log.error("A resource type is required. See 'stormpath --help' for " \
+            "list of available resource types.")
+        return -1
+
+    if resource not in AVAILABLE_RESOURCES:
+        log.error("Unknown resource type '%s'. See 'stormpath --help' for " \
+            "list of available resource types." % resource)
+        return -1
+
+    try:
+        auth_args = setup_api_key(arguments)
+        client = Client(**auth_args)
+    except ValueError as ex:
+        log.error(str(ex))
+        return -1
+
+    res = AVAILABLE_RESOURCES[resource](client)
+    act = AVAILABLE_ACTIONS[action]
+
+    result = act(res)
+    if result:
+        output(result,
+            show_links=arguments.get('--show-links', False),
+            show_headers=arguments.get('--show-headers', False))
+    return 0
+
 
 if __name__ == '__main__':
-    main()
+    import sys
+    sys.exit(main())
