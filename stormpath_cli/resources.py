@@ -1,22 +1,10 @@
-def application(client, *args, **kwargs):
-    return client.applications
-
-def directory(client, *args, **kwargs):
-    raise NotImplementedError()
-
-def group(client, *args, **kwargs):
-    raise NotImplementedError()
-
-def account(client, *args, **kwargs):
-    raise NotImplementedError()
-
-def user(client, *args, **kwargs):
-    raise NotImplementedError()
-
 AVAILABLE_RESOURCES = {
-    'application': application,
-    'directory': directory,
-    'group': group,
-    'account': account,
-    'user': user
+    'application': lambda c: c.applications,
+    'applications': lambda c: c.applications,
+    'directory': lambda c: c.directories,
+    'directories': lambda c: c.directories,
+    'account': lambda c: c.accounts,
+    'accounts': lambda c: c.accounts,
+    'group': lambda c: c.groups,
+    'groups': lambda c: c.groups,
 }
