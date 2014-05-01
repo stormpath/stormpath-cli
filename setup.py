@@ -48,7 +48,6 @@ def find_version(*file_paths):
 
 setup(
     name='stormpath-cli',
-    namespace_packages = ['stormpath_cli'],
     version=find_version("stormpath_cli", "__init__.py"),
     author='Stormpath Inc.',
     author_email='python@stormpath.com',
@@ -56,7 +55,7 @@ setup(
     url='https://github.com/stormpath/stormpath-cli',
     packages=find_packages(),
     include_package_data=True,
-    keywords=['stormpath', 'cli'],
+    keywords=['stormpath', 'client'],
     license='Apache 2.0',
     install_requires=['docopt >= 0.6.1', 'stormpath >= 1.1.0'],
     classifiers=[
