@@ -71,9 +71,10 @@ setup(
         'Topic :: System :: Installation/Setup',
         'Topic :: Utilities'
     ],
-    entry_points="""
-    [console_scripts]
-    stormpath=stormpath_cli.main:main
-    """,
+    entry_points={
+        'console_scripts': [
+            'stormpath = stormpath_cli.main:main'
+        ]
+    },
 )
 
