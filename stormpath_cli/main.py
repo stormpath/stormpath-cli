@@ -12,11 +12,11 @@ Actions:
     set     Set context for user/group actions
 
 Resources:
-    application    Application Resource
-    directory      Directory Resource
-    group          Group Resource
-    account        Account Resource
-    user           User Resource
+    application  Application Resource
+    directory    Directory Resource
+    group        Group Resource
+    account      Account Resource
+    user         User Resource
 
 Options:
     -h, --help                              Lists help
