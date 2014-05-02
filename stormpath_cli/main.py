@@ -52,6 +52,7 @@ name or URL.
 
 from docopt import docopt
 from stormpath.client import Client
+from stormpath.error import Error as StormpathError
 
 from stormpath_cli.actions import AVAILABLE_ACTIONS, DEFAULT_ACTION
 from stormpath_cli.auth import setup_api_key
@@ -103,7 +104,12 @@ def main():
         return -1
 
     act = AVAILABLE_ACTIONS[action]
-    result = act(res, arguments)
+
+    try:
+        result = act(res, arguments)
+    except (StormpathError, ValueError) as ex:
+        log.error(str(ex))
+        return -1
 
     if result is not None:
         output(result,
