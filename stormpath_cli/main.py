@@ -5,7 +5,7 @@
 A command-line client for the Stormpath REST API (https://stormpath.com).
 
 Actions:
-    list    List resources on Stormpath
+    list    List/search resources on Stormpath
     create  Create a resource on Stormpath
     update  Update a resource on Stormpath
     delete  Remove a resource from Stormpath
@@ -27,7 +27,7 @@ Options:
     -L, --show-links                        Show links to related resources
     -H, --show-headers                      If in TSV mode, show column headers in the first line
 
-List/Search options:
+List/search options:
     -n <name>, --name <name>                Match applications/directories/groups with name <name>
     -d <desc>, --description <desc>         Match applications/directories/groups with description <desc>
     -e <email>, --email <email>             Match accounts with email <email>
