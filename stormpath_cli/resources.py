@@ -1,23 +1,33 @@
+from stormpath.client import Client
+
+
+def get_resource(coll, id_name, id_value):
+    if id_value.startswith(Client.BASE_URL):
+        return coll.get(id_value)
+
+    coll = coll.query(**{id_name: id_value})
+    if len(coll):
+        return coll[0]
+    else:
+        raise ValueError("The requested resource does not exist.")
+
+
+def get_resource_data(resource):
+    # FIXME: uses undocumented and unsupported API; this should move into the
+    # SDK proper before releasing
+    return resource._store.get_resource(resource.href)
+
+
 def _get_context(client, args):
     a = args.get('--in-application')
     d = args.get('--in-directory')
 
-    def _get_resource(coll, identifier):
-        if identifier.startswith(client.BASE_URL):
-            return coll.get(identifier)
-        else:
-            coll = coll.query(name=identifier)
-            if len(coll):
-                return coll[0]
-            else:
-                raise ValueError("The requested resource does not exist.")
-
     if a and d:
         raise ValueError("Can't specify both --in-application and --in-directory")
     elif a:
-        return _get_resource(client.applications, a)
+        return get_resource(client.applications, 'name', a)
     elif d:
-        return _get_resource(client.directories, d)
+        return get_resource(client.directories, 'name', d)
     else:
         raise ValueError("Set the context with either --in-application or --in-directory")
 
