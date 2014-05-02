@@ -26,6 +26,21 @@ Options:
     -L, --show-links                        Show links to related resources
     -H, --show-headers                      If in TSV mode, show column headers in the first line
 
+List/Search options:
+    -n <name>, --name <name>                Match applications/directories/groups with name <name>
+    -d <desc>, --description <desc>         Match applications/directories/groups with description <desc>
+    -e <email>, --email <email>             Match accounts with email <email>
+    -g <name>, --given-name <name>          Match accounts with given name <name>
+    -f <name>, --full-name <name>           Match accounts with full name <name>
+    -s <name>, --surname <name>             Match accounts with surname <name>
+
+    -q <query>, --query <query>             Match resources according to the filter <query>
+    -S <status>, --status <status>          Match resources with status <status>
+
+Specific search options are only available for resources that have matching
+attributes. Option '--query' matches on substrings, but all of the other search
+options require an exact match.
+
 Specifying the application or directory context (for accounts and groups):
     -A <app>, --in-application <app>        Set context to application <app>
     -D <dir>, --in-directory <dir>          Set context to directory <dir>
@@ -87,9 +102,9 @@ def main():
         return -1
 
     act = AVAILABLE_ACTIONS[action]
+    result = act(res, arguments)
 
-    result = act(res)
-    if result:
+    if result is not None:
         output(result,
             show_links=arguments.get('--show-links', False),
             show_headers=arguments.get('--show-headers', False))
