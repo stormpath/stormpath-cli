@@ -1,9 +1,15 @@
+from __future__ import print_function
+import json
+
 from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
 
-SEARCH_ATTRIBUTE_MAPS = {
+from .output import get_logger, output
+from .resources import get_resource, get_resource_data
+
+ATTRIBUTE_MAPS = {
     AccountList: dict(
         email='--email',
         full_name='--full-name',
@@ -23,39 +29,103 @@ SEARCH_ATTRIBUTE_MAPS = {
         description='--description',
     ),
 }
-for v in SEARCH_ATTRIBUTE_MAPS.values():
+
+SEARCH_ATTRIBUTE_MAPS = {}
+for k, v in ATTRIBUTE_MAPS.items():
+    v = v.copy()
     v.update(dict(status='--status', q='--query'))
+    SEARCH_ATTRIBUTE_MAPS[k] = v
 
+CREATE_ATTRIBUTE_MAPS = {}
+for k, v in ATTRIBUTE_MAPS.items():
+    CREATE_ATTRIBUTE_MAPS[k] = v
 
-def _specialized_query(args, ctype):
-    qmap = SEARCH_ATTRIBUTE_MAPS.get(ctype, {})
+RESOURCE_PRIMARY_ATTRIBUTES = {
+    AccountList: 'email',
+    ApplicationList: 'name',
+    DirectoryList: 'name',
+    GroupList: 'name',
+}
 
-    q = {}
-    for qname, opt in qmap.items():
+def _specialized_query(args, ctype, maps):
+    pmap = maps.get(ctype, {})
+
+    params = {}
+    for name, opt in pmap.items():
         optval = args.get(opt)
         if optval:
-            q[qname] = optval
-    return q
+            params[name] = optval
+    return params
 
 
 def list_resources(collection, args):
-    q = _specialized_query(args, type(collection))
+    q = _specialized_query(args, type(collection), SEARCH_ATTRIBUTE_MAPS)
     if q:
         collection = collection.query(**q)
-    return [r._store.get_resource(r.href) for r in collection.items]
+    output([get_resource_data(r) for r in collection.items])
 
 
-def create_resource(client, resource, *args, **kwargs):
-    raise NotImplementedError()
+def create_resource(collection, args):
+    properties = _specialized_query(args, type(collection),
+        CREATE_ATTRIBUTE_MAPS)
+    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
+    id_value = properties.get(id_name)
+    if not id_value:
+        raise ValueError("Required attribute '%s' not specified." % id_name)
+    resource = collection.create(properties)
+    output(get_resource_data(resource))
+    get_logger().info('Resource created.')
 
-def update_resource(client, resource, *args, **kwargs):
-    raise NotImplementedError()
 
-def delete_resource(client, resource, *args, **kwargs):
-    raise NotImplementedError()
+def update_resource(collection, args):
+    properties = _specialized_query(args, type(collection),
+        CREATE_ATTRIBUTE_MAPS)
+    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
+    id_value = properties.get(id_name)
+    if not id_value:
+        raise ValueError("Required attribute '%s' not specified." % id_name)
+
+    resource = get_resource(collection, id_name, id_value)
+    for name, value in properties.items():
+        if name == id_name:
+            continue
+        setattr(resource, name, value)
+    resource.save()
+    output(get_resource_data(resource))
+    get_logger().info('Resource created.')
+
+
+def delete_resource(collection, args):
+    properties = _specialized_query(args, type(collection),
+        CREATE_ATTRIBUTE_MAPS)
+    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
+    id_value = properties.get(id_name)
+    force = args.get('--force', False)
+    if not id_value:
+        raise ValueError("Required attribute '%s' not specified." % id_name)
+
+    resource = get_resource(collection, id_name, id_value)
+    data = get_resource_data(resource)
+
+    if not force:
+        print("Are you sure you want to delete the following resource?")
+        print(json.dumps(data, indent=2, sort_keys=True))
+        resp = raw_input('Delete this resource [y/N]? ')
+        if resp.upper() != 'Y':
+            print("Bailig out.")
+            return
+    else:
+        # If we're running in a script, it's useful to log exactly which
+        # resource was deleted (update/create do the same)
+        output(data)
+
+    resource.delete()
+    get_logger().info("Resource deleted.")
+
 
 def set_context(client, resource, *args, **kwargs):
     raise NotImplementedError()
+
 
 AVAILABLE_ACTIONS = {
     'list': list_resources,
