@@ -25,6 +25,13 @@ Options:
     -k <file>, --apikeyfile <file>          Use credentials from <file>
     -L, --show-links                        Show links to related resources
     -H, --show-headers                      If in TSV mode, show column headers in the first line
+
+Specifying the application or directory context (for accounts and groups):
+    -A <app>, --in-application <app>        Set context to application <app>
+    -D <dir>, --in-directory <dir>          Set context to directory <dir>
+
+For -A and -D options, the application and directory can be specified by their
+name or URL.
 """
 
 from docopt import docopt
@@ -73,7 +80,12 @@ def main():
         log.error(str(ex))
         return -1
 
-    res = AVAILABLE_RESOURCES[resource](client)
+    try:
+        res = AVAILABLE_RESOURCES[resource](client, arguments)
+    except ValueError as ex:
+        log.error(str(ex))
+        return -1
+
     act = AVAILABLE_ACTIONS[action]
 
     result = act(res)
