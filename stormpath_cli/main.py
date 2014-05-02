@@ -19,7 +19,8 @@ Resources:
     user           User Resource
 
 Options:
-    -h --help                               Lists help
+    -h, --help                              Lists help
+    -v, --verbose                           Show debugging info
 
     -a <key:secret>, --apikey <key:secret>  Authenticate with provided key and secret
     -k <file>, --apikeyfile <file>          Use credentials from <file>
@@ -59,11 +60,11 @@ from stormpath_cli.output import output, setup_output
 
 
 def main():
-    log = setup_output()
-
     arguments = docopt(__doc__)
     action = arguments.get('<action>')
     resource = arguments.get('<resource>')
+
+    log = setup_output(arguments.get('--verbose'))
 
     if action in AVAILABLE_RESOURCES and not resource:
       resource = action

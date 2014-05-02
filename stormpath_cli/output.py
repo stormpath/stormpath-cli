@@ -59,10 +59,14 @@ def get_logger():
     return logging.getLogger('stormpath_cli')
 
 
-def setup_output():
-    if stdout.isatty():
-        logging.basicConfig(format='%(message)s', level=logging.INFO)
+def setup_output(verbose):
+    if verbose:
+        level = logging.DEBUG
+    elif stdout.isatty():
+        level = logging.INFO
     else:
-        logging.basicConfig(format='%(message)s', level=logging.ERROR)
+        level = logging.ERROR
+
+    logging.basicConfig(format='%(message)s', level=level)
     logging.getLogger("requests").propagate = False
     return get_logger()
