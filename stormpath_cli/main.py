@@ -42,6 +42,9 @@ Specific search options are only available for resources that have matching
 attributes. Option '--query' matches on substrings, but all of the other search
 options require an exact match.
 
+Deletion flags:
+    -F, --force                             Don't ask confirmation before deleting the resource
+
 Specifying the application or directory context (for accounts and groups):
     -A <app>, --in-application <app>        Set context to application <app>
     -D <dir>, --in-directory <dir>          Set context to directory <dir>
