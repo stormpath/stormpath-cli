@@ -6,8 +6,10 @@ from stormpath.resources.application import ApplicationList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
 
+from .context import set_context, show_context
 from .output import get_logger, output
 from .resources import get_resource, get_resource_data
+
 
 ATTRIBUTE_MAPS = {
     AccountList: dict(
@@ -123,16 +125,13 @@ def delete_resource(collection, args):
     get_logger().info("Resource deleted.")
 
 
-def set_context(client, resource, *args, **kwargs):
-    raise NotImplementedError()
-
-
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
     'update': update_resource,
     'delete': delete_resource,
-    'set': set_context
+    'set': set_context,
+    'context': show_context,
 }
 
 DEFAULT_ACTION = 'list'

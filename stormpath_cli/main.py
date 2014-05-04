@@ -5,11 +5,12 @@
 A command-line client for the Stormpath REST API (https://stormpath.com).
 
 Actions:
-    list    List/search resources on Stormpath
-    create  Create a resource on Stormpath
-    update  Update a resource on Stormpath
-    delete  Remove a resource from Stormpath
-    set     Set context for user/group actions
+    list     List/search resources on Stormpath
+    create   Create a resource on Stormpath
+    update   Update a resource on Stormpath
+    delete   Remove a resource from Stormpath
+    set      Set context for user/group actions
+    context  Show currently used context for user/group actions
 
 Resources:
     application  Application Resource
@@ -69,6 +70,8 @@ def main():
     resource = arguments.get('<resource>')
 
     log = setup_output(arguments.get('--verbose'))
+
+    arguments.update(get_context_dict())
 
     if action in AVAILABLE_RESOURCES and not resource:
       resource = action

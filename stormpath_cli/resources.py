@@ -29,7 +29,7 @@ def _get_context(client, args):
     elif d:
         return get_resource(client.directories, 'name', d)
     else:
-        raise ValueError("Set the context with either --in-application or --in-directory")
+        raise ValueError("Set the context with --in-application, --in-directory or 'set'")
 
 
 def get_accounts(client, args):
