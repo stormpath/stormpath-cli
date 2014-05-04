@@ -38,10 +38,6 @@ for k, v in ATTRIBUTE_MAPS.items():
     v.update(dict(status='--status', q='--query'))
     SEARCH_ATTRIBUTE_MAPS[k] = v
 
-CREATE_ATTRIBUTE_MAPS = {}
-for k, v in ATTRIBUTE_MAPS.items():
-    CREATE_ATTRIBUTE_MAPS[k] = v
-
 RESOURCE_PRIMARY_ATTRIBUTES = {
     AccountList: 'email',
     ApplicationList: 'name',
@@ -49,7 +45,8 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
     GroupList: 'name',
 }
 
-def _specialized_query(args, ctype, maps):
+def _specialized_query(args, coll, maps):
+    ctype = type(coll)
     pmap = maps.get(ctype, {})
 
     params = {}
@@ -60,36 +57,36 @@ def _specialized_query(args, ctype, maps):
     return params
 
 
-def list_resources(collection, args):
-    q = _specialized_query(args, type(collection), SEARCH_ATTRIBUTE_MAPS)
+def _primary_attribute(coll, attrs):
+    attr_name = RESOURCE_PRIMARY_ATTRIBUTES[type(coll)]
+    attr_value = attrs.get(attr_name)
+    if not attr_value:
+        raise ValueError("Required attribute '%s' not specified." % attr_name)
+    return attr_name, attr_value
+
+
+def list_resources(coll, args):
+    q = _specialized_query(args, coll, SEARCH_ATTRIBUTE_MAPS)
     if q:
-        collection = collection.query(**q)
-    output([get_resource_data(r) for r in collection.items])
+        coll = coll.query(**q)
+    output([get_resource_data(r) for r in coll.items])
 
 
-def create_resource(collection, args):
-    properties = _specialized_query(args, type(collection),
-        CREATE_ATTRIBUTE_MAPS)
-    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
-    id_value = properties.get(id_name)
-    if not id_value:
-        raise ValueError("Required attribute '%s' not specified." % id_name)
-    resource = collection.create(properties)
+def create_resource(coll, args):
+    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    attr_name, attr_value = _primary_attribute(coll, attrs)
+    resource = coll.create(attrs)
     output(get_resource_data(resource))
     get_logger().info('Resource created.')
 
 
-def update_resource(collection, args):
-    properties = _specialized_query(args, type(collection),
-        CREATE_ATTRIBUTE_MAPS)
-    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
-    id_value = properties.get(id_name)
-    if not id_value:
-        raise ValueError("Required attribute '%s' not specified." % id_name)
+def update_resource(coll, args):
+    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    attr_name, attr_value = _primary_attribute(coll, attrs)
+    resource = get_resource(coll, attr_name, attr_value)
 
-    resource = get_resource(collection, id_name, id_value)
-    for name, value in properties.items():
-        if name == id_name:
+    for name, value in attrs.items():
+        if name == attr_name:
             continue
         setattr(resource, name, value)
     resource.save()
@@ -97,17 +94,12 @@ def update_resource(collection, args):
     get_logger().info('Resource created.')
 
 
-def delete_resource(collection, args):
-    properties = _specialized_query(args, type(collection),
-        CREATE_ATTRIBUTE_MAPS)
-    id_name = RESOURCE_PRIMARY_ATTRIBUTES[(type(collection))]
-    id_value = properties.get(id_name)
-    force = args.get('--force', False)
-    if not id_value:
-        raise ValueError("Required attribute '%s' not specified." % id_name)
-
-    resource = get_resource(collection, id_name, id_value)
+def delete_resource(coll, args):
+    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    attr_name, attr_value = _primary_attribute(coll, attrs)
+    resource = get_resource(coll, attr_name, attr_value)
     data = get_resource_data(resource)
+    force = args.get('--force', False)
 
     if not force:
         print("Are you sure you want to delete the following resource?")
