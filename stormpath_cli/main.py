@@ -11,6 +11,7 @@ Actions:
     delete   Remove a resource from Stormpath
     set      Set context for user/group actions
     context  Show currently used context for user/group actions
+    setup    Set up credentials for accessing the Stormpath API
 
 Resources:
     application  Application Resource
@@ -58,11 +59,12 @@ from docopt import docopt
 from stormpath.client import Client
 from stormpath.error import Error as StormpathError
 
-from stormpath_cli.actions import AVAILABLE_ACTIONS, DEFAULT_ACTION
-from stormpath_cli.auth import setup_api_key
+from stormpath_cli.actions import AVAILABLE_ACTIONS, LOCAL_ACTIONS, \
+    DEFAULT_ACTION
+from stormpath_cli.auth import init_auth
+from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
-
 
 def main():
     arguments = docopt(__doc__)
@@ -86,6 +88,9 @@ def main():
             "available actions." % action)
         return -1
 
+    if action in LOCAL_ACTIONS:
+        return 0 if AVAILABLE_ACTIONS[action](arguments) else -1
+
     if not resource:
         log.error("A resource type is required. See 'stormpath --help' for " \
             "list of available resource types.")
@@ -97,7 +102,7 @@ def main():
         return -1
 
     try:
-        auth_args = setup_api_key(arguments)
+        auth_args = init_auth(arguments)
         client = Client(**auth_args)
     except ValueError as ex:
         log.error(str(ex))

@@ -6,6 +6,7 @@ from stormpath.resources.application import ApplicationList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
 
+from .auth import setup_credentials
 from .context import set_context, show_context
 from .output import get_logger, output
 from .resources import get_resource, get_resource_data
@@ -124,6 +125,8 @@ AVAILABLE_ACTIONS = {
     'delete': delete_resource,
     'set': set_context,
     'context': show_context,
+    'setup': setup_credentials,
 }
 
+LOCAL_ACTIONS = ('setup', 'context')
 DEFAULT_ACTION = 'list'
