@@ -33,6 +33,12 @@ ATTRIBUTE_MAPS = {
     ),
 }
 
+EXTRA_MAPS = {
+    ApplicationList: dict(
+        create_directory='--create-directory'
+    )
+}
+
 SEARCH_ATTRIBUTE_MAPS = {}
 for k, v in ATTRIBUTE_MAPS.items():
     v = v.copy()
@@ -76,7 +82,13 @@ def list_resources(coll, args):
 def create_resource(coll, args):
     attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
-    resource = coll.create(attrs)
+    extra = _specialized_query(args, coll, EXTRA_MAPS)
+
+    if extra:
+        resource = coll.create(attrs, **extra)
+    else:
+        resource = coll.create(attrs)
+
     output(get_resource_data(resource))
     get_logger().info('Resource created.')
 
