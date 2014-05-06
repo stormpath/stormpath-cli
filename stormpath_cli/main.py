@@ -54,6 +54,9 @@ Specifying the application or directory context (for accounts and groups):
     -A <app>, --in-application <app>        Set context to application <app>
     -D <dir>, --in-directory <dir>          Set context to directory <dir>
 
+Use json input:
+    -j <json>, --json <json>                              Overrides the flags and uses json for input
+
 For -A and -D options, the application and directory can be specified by their
 name or URL.
 """

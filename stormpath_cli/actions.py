@@ -55,6 +55,12 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
 }
 
 def _specialized_query(args, coll, maps):
+    json_rep = args.get('--json')
+    if json_rep:
+        try:
+            return json.loads(json_rep)
+        except ValueError as e:
+            raise ValueError("Error parsing JSON: {}".format(e))
     ctype = type(coll)
     pmap = maps.get(ctype, {})
 
