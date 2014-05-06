@@ -14,10 +14,12 @@ from .resources import get_resource, get_resource_data
 
 ATTRIBUTE_MAPS = {
     AccountList: dict(
+        username='--username',
         email='--email',
         full_name='--full-name',
         given_name='--given-name',
         surname='--surname',
+        password='--password',
     ),
     ApplicationList: dict(
         name='--name',

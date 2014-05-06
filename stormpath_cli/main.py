@@ -30,16 +30,18 @@ Options:
     -H, --show-headers                      If in TSV mode, show column headers in the first line
     -R, --create-directory                  When creating an application create the directory
 
-List/search options:
+List/search/create options:
     -n <name>, --name <name>                Match applications/directories/groups with name <name>
     -d <desc>, --description <desc>         Match applications/directories/groups with description <desc>
-    -e <email>, --email <email>             Match accounts with email <email>
-    -g <name>, --given-name <name>          Match accounts with given name <name>
-    -f <name>, --full-name <name>           Match accounts with full name <name>
-    -s <name>, --surname <name>             Match accounts with surname <name>
-
     -q <query>, --query <query>             Match resources according to the filter <query>
     -S <status>, --status <status>          Match resources with status <status>
+    -s <name>, --surname <name>             Match accounts with surname <name>
+    -f <name>, --full-name <name>           Match accounts with full name <name>
+    -g <name>, --given-name <name>          Match accounts with given name <name>
+    -e <email>, --email <email>             Match accounts with email <email>
+    -u <username>, --username <username>    Account username
+    -p <password>, --password <password>    Account password
+
 
 Specific search options are only available for resources that have matching
 attributes. Option '--query' matches on substrings, but all of the other search
