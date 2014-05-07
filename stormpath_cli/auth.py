@@ -67,14 +67,12 @@ def init_auth(args):
 def _ask_for_credentials():
     print("Please input your API Key ID and API Key Secret.")
     print("(visit http://docs.stormpath.com/rest/quickstart/#get-an-api-key for more information)")
-    print("API Key ID: ", end='')
 
     try:
-        key_id = raw_input()
+        key_id = raw_input("API Key ID: ")
         if not key_id:
             return None
-        print ("API Key Secret: ", end='')
-        key_secret = getpass()
+        key_secret = getpass("API Key Secret: ")
         if not key_secret:
             return None
     except KeyboardInterrupt:
