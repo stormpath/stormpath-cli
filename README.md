@@ -34,15 +34,26 @@ It might be useful to fist familiarize yourself with the [Stormpath REST API](ht
 
 #### Setting up the CLI
 
-To setup the CLI tool after you've saved the `$HOME/.stormpath/apiKey.properties` file run the following command:
+To setup the CLI tool run the following command (if the file `$HOME/.stormpath/apiKey.properties` exists it will be used automatically):
 
     stormpath setup
 
-You should see the following output:
+If you already had the `$HOME/.stormpath/apiKey.properties` file in place you should see the following output:
 
     Using API Key file /home/myuser/.stormpath/apiKey.properties for authentication.
     API Key written to /home/myuser/.stormpath/cli/apiKey.properties
     Stormpath CLI is set up and ready to go!
+
+If you don't have the `apiKey.proerpties` file in place, to setup the CLI tool you will get prompted to enter
+the API key and secret:
+
+    Unable to discover an existing API Key file path or API Key environment variable.
+    Please input your API Key ID and API Key Secret.
+    (visit http://docs.stormpath.com/rest/quickstart/#get-an-api-key for more information)
+    API Key ID:
+    API Key Secret:
+    API Key written to /home/myuser/.stormpath/cli/apiKey.properties
+
 
 #### Override default settings
 
@@ -52,7 +63,9 @@ You can pass `-a` or `--apikey` flags to every command:
     stormpath command -a 144JVZINOF5EBNCMG9EXAMPLE:lWxOiKqKPNwJmSldbiSkEbkNjgh2uRSNAb+AEXAMPLE
     stormpath command --apikey 144JVZINOF5EBNCMG9EXAMPLE:lWxOiKqKPNwJmSldbiSkEbkNjgh2uRSNAb+AEXAMPLE
 
-Or point to a different `apiKey.properties` file like so:
+`WARNING` : don't use if there are other users on the machine, since the key and the secret will be visible to anyone using the `ps` command to list the running processes.
+
+Point to a different `apiKey.properties` file like so:
 
     stormpath command --apikeyfile /home/myuser/apiKeyAlternate.properties
 
@@ -73,30 +86,30 @@ The stormpath cli tool uses the following format:
 
 Supported actions are as follows:
 
-  * list     List/search resources on Stormpath
-  * create   Create a resource on Stormpath
-  * update   Update a resource on Stormpath
-  * delete   Remove a resource from Stormpath
-  * set      Set context for user/group actions
-  * context  Show currently used context for user/group actions
-  * setup    Set up credentials for accessing the Stormpath API
+  * list    -  List/search resources on Stormpath
+  * create  -  Create a resource on Stormpath
+  * update  -  Update a resource on Stormpath
+  * delete  -  Remove a resource from Stormpath
+  * set     -  Set context for user/group actions
+  * context -  Show currently used context for user/group actions
+  * setup   -  Set up credentials for accessing the Stormpath API
 
 And supported resources are:
 
-  * application  Application Resource
-  * directory    Directory Resource
-  * group        Group Resource
-  * account      Account Resource
-  * user         User Resource
+  * application  -   Application Resource
+  * directory    -   Directory Resource
+  * group        -   Group Resource
+  * account      -   Account Resource
+  * user         -   User Resource
 
-If no action is specified the cli defaults to a `list` actions. So the following 2 commands are the same:
+If no action is specified the CLI defaults to a `list` actions. So the following 2 commands are the same:
 
     stormpath list applications
     stormpath applications
 
-    Which yields the following output:
+Which results in the following output:
 
-    Using API Key file /home/deni/.stormpath/cli/apiKey.properties for authentication.
+    Using API Key file /home/myuser/.stormpath/cli/apiKey.properties for authentication.
     [
       {
         "defaultAccountStoreMapping": null, 
@@ -117,7 +130,7 @@ If no action is specified the cli defaults to a `list` actions. So the following
     ]
 
 
-Note how the cli tool supports using plural and singular forms (ie. `applications` and `application` yield the same result).
+Note how the cli tool supports using plural and singular forms (ie. `applications` and `application` do the same thing).
 
 #### Creating an Application
     
@@ -137,13 +150,13 @@ Test to see if the app and directory got created:
 
 Depending on what resource you're referencing there are required and optional flags:
 
-    For applications, directories, groups: 
+For applications, directories, groups: 
     
     -n, --name              required, the name of the resource
     -d, --description       optional, the description of the resource
     -R, --create-directory  optional, auto create directory
     
-    For accounts:
+For accounts:
 
     -e, --email             required, the email property of the account
     -p, --password          required, the password property of the account
@@ -153,7 +166,7 @@ Depending on what resource you're referencing there are required and optional fl
     -m, --middle-name       optional, the middleName property
     -f, --full-name         optional, the full name property
     
-    For Accounts and Groups:
+For Accounts and Groups:
 
     -A, --in-application
     -D, --in-directory      For All Resources
@@ -169,11 +182,11 @@ we wish to update:
 
 Update commands require an identifier that identifies the resource:
 
-    For Applications, Directories, Groups:
+For Applications, Directories, Groups:
     
     -n, --name  required, identifier name
     
-    For Accounts:
+For Accounts:
     
     -e, --email required, account email
 
@@ -182,11 +195,11 @@ Update commands require an identifier that identifies the resource:
 
 To delete a resource, a resource must be identified:
 
-    For Applications, Directories, Groups:
+For Applications, Directories, Groups:
     
     -n, --name  required, identifier name
     
-    For Accounts:
+For Accounts:
     
     -e, --email required, account email
 
@@ -240,7 +253,7 @@ To see the current context use the following command:
 
     stormpath context
 
-    Output:
+Output:
 
     Using context from file /home/myuser/.stormpath/cli/context.properties.
     Current context set to the application 'My Application'.
