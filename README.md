@@ -4,7 +4,7 @@ A command-line client for the Stormpath REST API (https://stormpath.com).
 
 ### Install:
 
-    pip stormpath-cli
+    pip install stormpath-cli
 
 ### Usage:
 
