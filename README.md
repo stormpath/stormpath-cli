@@ -258,3 +258,12 @@ Output:
     Using context from file /home/myuser/.stormpath/cli/context.properties.
     Current context set to the application 'My Application'.
     Account / Groups actions are configured to target 'My Application'.
+
+
+# Copyright & Licensing
+
+Copyright © 2012, 2013, 2014 Stormpath, Inc. and contributors.
+
+This project is licensed under the [Apache 2.0 Open Source License](http://www.apache.org/licenses/LICENSE-2.0).
+
+For additional information, please see the full [Project Documentation](https://www.stormpath.com/docs/python/product-guide).
