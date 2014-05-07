@@ -112,7 +112,7 @@ def update_resource(coll, args):
         setattr(resource, name, value)
     resource.save()
     output(get_resource_data(resource))
-    get_logger().info('Resource created.')
+    get_logger().info('Resource updated.')
 
 
 def delete_resource(coll, args):
