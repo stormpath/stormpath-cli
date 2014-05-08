@@ -63,7 +63,6 @@ def _specialized_query(args, coll, maps):
             raise ValueError("Error parsing JSON: {}".format(e))
     ctype = type(coll)
     pmap = maps.get(ctype, {})
-
     params = {}
     for name, opt in pmap.items():
         optval = args.get(opt)
@@ -111,6 +110,13 @@ def update_resource(coll, args):
             continue
         setattr(resource, name, value)
     resource.save()
+
+    account_groups = args.get('--groups')
+    if account_groups and isinstance(coll, AccountList):
+        groups = [g.strip() for g in account_groups.split(',')]
+        for group in groups:
+            resource.add_group(group)
+
     output(get_resource_data(resource))
     get_logger().info('Resource updated.')
 

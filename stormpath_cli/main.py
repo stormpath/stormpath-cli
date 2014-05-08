@@ -41,6 +41,7 @@ List/search/create options:
     -e <email>, --email <email>             Match accounts with email <email>
     -u <username>, --username <username>    Account username
     -p <password>, --password <password>    Account password
+    -G <group>..., --groups <group>...     Add account to groups
 
 
 Specific search options are only available for resources that have matching
