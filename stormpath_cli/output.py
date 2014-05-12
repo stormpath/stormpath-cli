@@ -14,21 +14,29 @@ def _remove_links(data):
             if isinstance(v, dict):
                 del el[k]
 
+
 def _format_row(data, key, max_indent):
-    d = data[key] if data[key] else 'Null'
+    d = data[key] if data[key] else 'null'
     spacing = max_indent - len(key)
     spaces = "".join(repeat(" ", spacing))
     row_repr = "%s: %s%s\n" % (key, spaces, d)
     return row_repr
 
-def _output_to_tty(data):
+
+def _output_to_tty_human_readable(data):
     for item in data:
+        # sort keys alphabetically
         ordered_data = collections.OrderedDict(sorted(item.items()))
         max_indent = max(imap(len, ordered_data.keys()))
         for key in ordered_data.keys():
             msg = _format_row(ordered_data, key, max_indent)
             stdout.write(msg)
         stdout.write("\n")
+
+
+def _output_to_tty_json(data):
+    stdout.write(json.dumps(data, indent=2, sort_keys=True))
+    stdout.write('\n')
 
 
 def _output_tsv(data, show_headers):
@@ -59,12 +67,15 @@ def _output_tsv(data, show_headers):
         stdout.write('\n')
 
 
-def output(data, show_links=False, show_headers=False):
+def output(data, show_links=False, show_headers=False, output_json=False):
     if not show_links:
         _remove_links(data)
 
     if stdout.isatty():
-        _output_to_tty(data)
+        if output_json:
+            _output_to_tty_json(data)
+        else:
+            _output_to_tty_human_readable(data)
     else:
         _output_tsv(data, show_headers=show_headers)
 

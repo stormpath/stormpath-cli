@@ -56,7 +56,8 @@ Specifying the application or directory context (for accounts and groups):
     -D <dir>, --in-directory <dir>          Set context to directory <dir>
 
 Use json input:
-    -j <json>, --json <json>                              Overrides the flags and uses json for input
+    -j <json>, --json <json>                Overrides the flags and uses json for input
+    --output-json                           Overrides the default human readable output to json
 
 For -A and -D options, the application and directory can be specified by their
 name or URL.

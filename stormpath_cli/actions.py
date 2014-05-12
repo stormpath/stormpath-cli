@@ -83,7 +83,7 @@ def list_resources(coll, args):
     q = _specialized_query(args, coll, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
-    output([get_resource_data(r) for r in coll.items])
+    output([get_resource_data(r) for r in coll.items], output_json=args.get('--output-json'))
 
 
 def create_resource(coll, args):
@@ -96,7 +96,7 @@ def create_resource(coll, args):
     else:
         resource = coll.create(attrs)
 
-    output(get_resource_data(resource))
+    output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource created.')
 
 
@@ -117,7 +117,7 @@ def update_resource(coll, args):
         for group in groups:
             resource.add_group(group)
 
-    output(get_resource_data(resource))
+    output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource updated.')
 
 
@@ -137,7 +137,7 @@ def delete_resource(coll, args):
     else:
         # If we're running in a script, it's useful to log exactly which
         # resource was deleted (update/create do the same)
-        output(data)
+        output(data, output_json=args.get('--output-json'))
 
     resource.delete()
     get_logger().info("Resource deleted.")
