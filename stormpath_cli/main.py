@@ -74,6 +74,7 @@ from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
 
+
 def main():
     arguments = docopt(__doc__)
     action = arguments.get('<action>')
@@ -84,15 +85,15 @@ def main():
     arguments.update(get_context_dict())
 
     if action in AVAILABLE_RESOURCES and not resource:
-      resource = action
-      action = DEFAULT_ACTION
+        resource = action
+        action = DEFAULT_ACTION
 
     if not action:
         log.error(__doc__.strip('\n'))
         return -1
 
     if action not in AVAILABLE_ACTIONS:
-        log.error("Unknown action '%s'. See 'stormpath --help' for list of " \
+        log.error("Unknown action '%s'. See 'stormpath --help' for list of "
             "available actions." % action)
         return -1
 
@@ -100,12 +101,12 @@ def main():
         return 0 if AVAILABLE_ACTIONS[action](arguments) else -1
 
     if not resource:
-        log.error("A resource type is required. See 'stormpath --help' for " \
+        log.error("A resource type is required. See 'stormpath --help' for "
             "list of available resource types.")
         return -1
 
     if resource not in AVAILABLE_RESOURCES:
-        log.error("Unknown resource type '%s'. See 'stormpath --help' for " \
+        log.error("Unknown resource type '%s'. See 'stormpath --help' for "
             "list of available resource types." % resource)
         return -1
 

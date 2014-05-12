@@ -23,13 +23,15 @@ def _get_context(client, args):
     d = args.get('--in-directory')
 
     if a and d:
-        raise ValueError("Can't specify both --in-application and --in-directory")
+        raise ValueError("Can't specify both --in-application "
+            "and --in-directory")
     elif a:
         return get_resource(client.applications, 'name', a)
     elif d:
         return get_resource(client.directories, 'name', d)
     else:
-        raise ValueError("Set the context with --in-application, --in-directory or 'set'")
+        raise ValueError("Set the context with --in-application, "
+            "--in-directory or 'set'")
 
 
 def get_accounts(client, args):

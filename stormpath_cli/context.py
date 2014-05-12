@@ -18,7 +18,7 @@ def get_context_dict(quiet=True):
             get_config_path('context.properties'))
 
     flag, value = data.split('=', 1)
-    return { flag.strip(): value.strip() }
+    return {flag.strip(): value.strip()}
 
 
 def _display_context():

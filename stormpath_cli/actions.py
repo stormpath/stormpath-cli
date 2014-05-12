@@ -54,6 +54,7 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
     GroupList: 'name',
 }
 
+
 def _specialized_query(args, coll, maps):
     json_rep = args.get('--json')
     if json_rep:
@@ -95,7 +96,8 @@ def list_resources(coll, args):
     q = _specialized_query(args, coll, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
-    output([get_resource_data(r) for r in coll.items], output_json=args.get('--output-json'))
+    output([get_resource_data(r) for r in coll.items],
+        output_json=args.get('--output-json'))
 
 
 def create_resource(coll, args):
