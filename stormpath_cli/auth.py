@@ -8,7 +8,7 @@ from .output import get_logger
 from .util import get_config_path, store_config_file
 
 
-def init_auth(args):
+def init_auth(args, quiet=True):
     log = get_logger()
 
     api_key = args.get('--apikey')
@@ -23,21 +23,24 @@ def init_auth(args):
         if not exists(key_file):
             raise ValueError("Provided API key file doesn't exist: " + key_file)
         key_file = realpath(key_file)
-        log.info("Using API Key file %s for authentication." % key_file)
+        if not quiet:
+            log.info("Using API Key file %s for authentication." % key_file)
         return dict(api_key_file_location=key_file)
 
     key_id = environ.get('STORMPATH_APIKEY_ID')
     key_secret = environ.get('STORMPATH_APIKEY_SECRET')
     if key_id and key_secret:
-        log.info("Using environment variables STORMPATH_APIKEY_ID and " \
-            "STORMPATH_APIKEY_SECRET for authentication.")
+        if not quiet:
+            log.info("Using environment variables STORMPATH_APIKEY_ID and " \
+                "STORMPATH_APIKEY_SECRET for authentication.")
         return dict(id=key_id, secret=key_secret)
 
     api_key = environ.get('STORMPATH_APIKEY')
     if api_key and ':' in api_key:
         key_id, key_secret = api_key.split(':', 1)
-        log.info("Using environment variable STORMPATH_APIKEY for " \
-            "authentication.")
+        if not quiet:
+            log.info("Using environment variable STORMPATH_APIKEY for " \
+                "authentication.")
         return dict(id=key_id, secret=key_secret)
 
     key_file = environ.get('STORMPATH_APIKEY_FILE')
@@ -46,8 +49,9 @@ def init_auth(args):
             raise ValueError("API key file from STORMPATH_APIKEY_FILE " \
                 "environment variable doesn't exist: " + key_file)
         key_file = realpath(key_file)
-        log.info("Using environment variable STORMPATH_APIKEY_FILE for " \
-            "authentication.")
+        if not quiet:
+            log.info("Using environment variable STORMPATH_APIKEY_FILE for " \
+                "authentication.")
         return dict(api_key_file_location=key_file)
 
     if 'HOME' in environ:
@@ -57,7 +61,8 @@ def init_auth(args):
 
         if exists(key_file):
             key_file = realpath(key_file)
-            log.info("Using API Key file %s for authentication." % key_file)
+            if not quiet:
+                log.info("Using API Key file %s for authentication." % key_file)
             return dict(api_key_file_location=key_file)
 
     raise ValueError("Unable to discover an existing API Key file path " \
@@ -85,7 +90,7 @@ def setup_credentials(arguments):
     log = get_logger()
 
     try:
-        auth_params = init_auth(arguments)
+        auth_params = init_auth(arguments, quiet=False)
     except ValueError as ex:
         log.info(str(ex))
         auth_params = _ask_for_credentials()

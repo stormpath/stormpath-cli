@@ -6,7 +6,7 @@ from .resources import get_resource
 from .util import get_config_path, get_config_file, store_config_file
 
 
-def get_context_dict(quiet=False):
+def get_context_dict(quiet=True):
 
     data = get_config_file('context.properties')
     if not data or '=' not in data:
