@@ -133,7 +133,6 @@ def delete_resource(coll, args):
         print(json.dumps(data, indent=2, sort_keys=True))
         resp = raw_input('Delete this resource [y/N]? ')
         if resp.upper() != 'Y':
-            print("Bailig out.")
             return
     else:
         # If we're running in a script, it's useful to log exactly which
