@@ -1,4 +1,7 @@
+import collections
+from itertools import repeat, imap
 import json
+from pprint import pprint
 from sys import stdout
 import logging
 
@@ -11,10 +14,21 @@ def _remove_links(data):
             if isinstance(v, dict):
                 del el[k]
 
+def _format_row(data, key, max_indent):
+    d = data[key] if data[key] else 'Null'
+    spacing = max_indent - len(key)
+    spaces = "".join(repeat(" ", spacing))
+    row_repr = "%s: %s%s\n" % (key, spaces, d)
+    return row_repr
 
 def _output_to_tty(data):
-    stdout.write(json.dumps(data, indent=2, sort_keys=True))
-    stdout.write('\n')
+    for item in data:
+        ordered_data = collections.OrderedDict(sorted(item.items()))
+        max_indent = max(imap(len, ordered_data.keys()))
+        for key in ordered_data.keys():
+            msg = _format_row(ordered_data, key, max_indent)
+            stdout.write(msg)
+        stdout.write("\n")
 
 
 def _output_tsv(data, show_headers):
