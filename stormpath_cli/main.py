@@ -73,6 +73,7 @@ from stormpath_cli.auth import init_auth
 from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
+from stormpath_cli.util import strip_equal_sign
 
 def main():
     arguments = docopt(__doc__)
@@ -82,6 +83,7 @@ def main():
     log = setup_output(arguments.get('--verbose'))
 
     arguments.update(get_context_dict())
+    arguments = strip_equal_sign(arguments)
 
     if action in AVAILABLE_RESOURCES and not resource:
       resource = action

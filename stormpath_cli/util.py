@@ -26,3 +26,11 @@ def get_config_file(name, default=None):
         return open(fpath, 'r').read()
     else:
         return default
+
+
+def strip_equal_sign(arguments):
+    for k, v in arguments.items():
+        if v:
+            arguments.update({k: v.lstrip('=')})
+            v.lstrip('=')
+    return arguments
