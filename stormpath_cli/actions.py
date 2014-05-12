@@ -54,6 +54,7 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
     GroupList: 'name',
 }
 
+
 def _specialized_query(args, coll, maps):
     json_rep = args.get('--json')
     if json_rep:
@@ -79,14 +80,28 @@ def _primary_attribute(coll, attrs):
     return attr_name, attr_value
 
 
+def _gather_resource_attributes(coll, args):
+    attrs = ATTRIBUTE_MAPS[type(coll)]
+
+    for attr in args.get('<attributes>'):
+        if '=' not in attr:
+            raise ValueError("Unknown resource attribute: " + attr)
+        name, value = attr.split('=', 1)
+        if name not in attrs:
+            raise ValueError("Unknown resource attribute: " + name)
+        args[attrs[name]] = value
+
+
 def list_resources(coll, args):
     q = _specialized_query(args, coll, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
-    output([get_resource_data(r) for r in coll.items], output_json=args.get('--output-json'))
+    output([get_resource_data(r) for r in coll.items],
+        output_json=args.get('--output-json'))
 
 
 def create_resource(coll, args):
+    _gather_resource_attributes(coll, args)
     attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     extra = _specialized_query(args, coll, EXTRA_MAPS)
@@ -101,6 +116,7 @@ def create_resource(coll, args):
 
 
 def update_resource(coll, args):
+    _gather_resource_attributes(coll, args)
     attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     resource = get_resource(coll, attr_name, attr_value)
