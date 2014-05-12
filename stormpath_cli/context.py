@@ -47,6 +47,9 @@ def set_context(collection, args):
     if not value:
         raise ValueError("Resource name or href is required.")
 
+    if value.find('*') != -1:
+        raise ValueError("Cannot use wildcard syntax when setting context.")
+
     # this verifies that the provided argument actually is a name
     get_resource(collection, 'name', value)
 
