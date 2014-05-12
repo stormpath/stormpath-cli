@@ -68,6 +68,8 @@ def _output_tsv(data, show_headers):
 
 
 def output(data, show_links=False, show_headers=False, output_json=False):
+    if not isinstance(data, list):
+        data = [data]
     if not show_links:
         _remove_links(data)
 
