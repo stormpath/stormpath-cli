@@ -76,6 +76,7 @@ def output(data, show_links=False, show_headers=False, output_json=False):
             _output_to_tty_json(data)
         else:
             _output_to_tty_human_readable(data)
+            stdout.write("\nTotal number of Resources returned: %s\n" % len(data))
     else:
         _output_tsv(data, show_headers=show_headers)
 
