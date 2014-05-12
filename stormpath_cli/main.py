@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Usage: stormpath [<action>] [<resource>] [options]
+"""Usage: stormpath [<action>] [<resource>] [options] [<attributes>...]
 
 A command-line client for the Stormpath REST API (https://stormpath.com).
 
