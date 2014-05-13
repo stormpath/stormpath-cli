@@ -106,10 +106,7 @@ def create_resource(coll, args):
     attr_name, attr_value = _primary_attribute(coll, attrs)
     extra = _specialized_query(args, coll, EXTRA_MAPS)
 
-    if extra:
-        resource = coll.create(attrs, **extra)
-    else:
-        resource = coll.create(attrs)
+    resource = coll.create(attrs, **extra)
 
     output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource created.')
