@@ -83,7 +83,7 @@ def _primary_attribute(coll, attrs):
 def _gather_resource_attributes(coll, args):
     attrs = ATTRIBUTE_MAPS[type(coll)]
 
-    for attr in args.get('<attributes>'):
+    for attr in args.get('<attributes>', []):
         if '=' not in attr:
             raise ValueError("Unknown resource attribute: " + attr)
         name, value = attr.split('=', 1)
