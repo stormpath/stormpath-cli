@@ -12,6 +12,7 @@ def _remove_links(data):
         for k, v in el.items():
             if isinstance(v, dict):
                 del el[k]
+    return data
 
 
 def _format_row(data, key, max_indent):
@@ -22,23 +23,23 @@ def _format_row(data, key, max_indent):
     return row_repr
 
 
-def _output_to_tty_human_readable(data):
+def _output_to_tty_human_readable(data, out=stdout):
     for item in data:
         # sort keys alphabetically
         ordered_data = collections.OrderedDict(sorted(item.items()))
         max_indent = max(imap(len, ordered_data.keys()))
         for key in ordered_data.keys():
             msg = _format_row(ordered_data, key, max_indent)
-            stdout.write(msg)
-        stdout.write("\n")
+            out.write(msg)
+        out.write("\n")
 
 
-def _output_to_tty_json(data):
-    stdout.write(json.dumps(data, indent=2, sort_keys=True))
-    stdout.write('\n')
+def _output_to_tty_json(data, out=stdout):
+    out.write(json.dumps(data, indent=2, sort_keys=True))
+    out.write('\n')
 
 
-def _output_tsv(data, show_headers):
+def _output_tsv(data, show_headers, out=stdout):
     if not isinstance(data, list):
         data = [data]
 
@@ -48,8 +49,8 @@ def _output_tsv(data, show_headers):
     keys = sorted(data[0].keys())
 
     if show_headers:
-        stdout.write(u'\t'.join(keys).encode('utf-8'))
-        stdout.write('\n')
+        out.write(u'\t'.join(keys).encode('utf-8'))
+        out.write('\n')
 
     def force_text(val):
         # if we're including links in TSV mode, we're only interested in href
@@ -62,15 +63,15 @@ def _output_tsv(data, show_headers):
 
     for row in data:
         output_row = [force_text(row[key]) for key in keys]
-        stdout.write(u'\t'.join(output_row).encode('utf-8'))
-        stdout.write('\n')
+        out.write(u'\t'.join(output_row).encode('utf-8'))
+        out.write('\n')
 
 
 def output(data, show_links=False, show_headers=False, output_json=False):
     if not isinstance(data, list):
         data = [data]
     if not show_links:
-        _remove_links(data)
+        data = _remove_links(data)
 
     if stdout.isatty():
         if output_json:
