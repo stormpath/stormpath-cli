@@ -30,7 +30,7 @@ def get_config_file(name, default=None):
 
 def strip_equal_sign(arguments):
     for k, v in arguments.items():
-        if v:
+        if v and isinstance(v, str) and (k.startswith('--') or k.startswith('-')):
             arguments.update({k: v.lstrip('=')})
             v.lstrip('=')
     return arguments
