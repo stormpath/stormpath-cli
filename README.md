@@ -82,7 +82,7 @@ If none of the described methods are found then the CLI tool will raise an error
 
 The stormpath cli tool uses the following format:
 
-    stormpath [<action>] [<resource>] [options]
+    stormpath [<action>] [<resource>] [options] [<attributes>...]
 
 Supported actions are as follows:
 
@@ -109,28 +109,24 @@ If no action is specified the CLI defaults to a `list` actions. So the following
 
 Which results in the following output:
 
-    Using API Key file /home/myuser/.stormpath/cli/apiKey.properties for authentication.
-    [
-      {
-        "defaultAccountStoreMapping": null, 
-        "defaultGroupStoreMapping": null, 
-        "description": null, 
-        "href": "https://api.stormpath.com/v1/applications/4tlsArn68oWmwungvwo8PQ", 
-        "name": "My Application", 
-        "status": "ENABLED"
-      }, 
-      {
-        "defaultAccountStoreMapping": null, 
-        "defaultGroupStoreMapping": null, 
-        "description": "Manages access to the Stormpath Console and API.", 
-        "href": "https://api.stormpath.com/v1/applications/717TBJKdavce58Ox3iFuXA", 
-        "name": "Stormpath", 
-        "status": "ENABLED"
-      }
-    ]
+    description: dinamo
+    href:        https://api.stormpath.com/v1/applications/4tlsArn68oWmwungvwo8PQ 
+    name:        My Application
+    status:      ENABLED
+
+    defaultAccountStoreMapping: null
+    defaultGroupStoreMapping:   null
+    description:                Manages access to the Stormpath Console and API.
+    href:                       https://api.stormpath.com/v1/applications/717TBJKdavce58Ox3iFuXA
+    name:                       Stormpath
+    status:                     ENABLED
 
 
 Note how the cli tool supports using plural and singular forms (ie. `applications` and `application` do the same thing).
+
+The cli tool supports outputting JSON as well, so if you wish to get the above output in json use the `--output-json` flag.
+
+Piping is supported as well, so a `stormpath list application | less` will result in a tab separated output.
 
 #### Creating an Application
     
@@ -258,6 +254,16 @@ Output:
     Using context from file /home/myuser/.stormpath/cli/context.properties.
     Current context set to the application 'My Application'.
     Account / Groups actions are configured to target 'My Application'.
+
+Note: Resource attributes can be specified with or without the `--`. For instance:
+
+    stormpath create account -e user@email.com username=dvader given-name=Anakin surname=Skywalker
+
+And:
+
+    stormpath create account -e user@email.com --username=dvader --given-name=Anakin --surname=Skywalker
+
+Both wil result in the same thing. Identifier flags such as `-e` still require the the dash.
 
 
 # Copyright & Licensing
