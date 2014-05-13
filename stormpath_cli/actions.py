@@ -1,7 +1,7 @@
 from __future__ import print_function
 import json
 
-from stormpath.resources.account import AccountList
+from stormpath.resources.account import AccountList, Account
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
@@ -55,7 +55,7 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
 }
 
 
-def _specialized_query(args, coll, maps):
+def _specialized_query(coll, args, maps):
     json_rep = args.get('--json')
     if json_rep:
         try:
@@ -90,10 +90,20 @@ def _gather_resource_attributes(coll, args):
         if name not in attrs:
             raise ValueError("Unknown resource attribute: " + name)
         args[attrs[name]] = value
+    return args
+
+
+def _add_resource_to_groups(resource, args):
+    account_groups = args.get('--groups')
+    if account_groups and hasattr(resource, 'add_group'):
+        groups = [g.strip() for g in account_groups.split(',')]
+        for group in groups:
+            resource.add_group(group)
+        return resource
 
 
 def list_resources(coll, args):
-    q = _specialized_query(args, coll, SEARCH_ATTRIBUTE_MAPS)
+    q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
     output([get_resource_data(r) for r in coll.items],
@@ -101,20 +111,21 @@ def list_resources(coll, args):
 
 
 def create_resource(coll, args):
-    _gather_resource_attributes(coll, args)
-    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    args = _gather_resource_attributes(coll, args)
+    attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
-    extra = _specialized_query(args, coll, EXTRA_MAPS)
+    extra = _specialized_query(coll, args, EXTRA_MAPS)
 
     resource = coll.create(attrs, **extra)
+    _add_resource_to_groups(resource, args)
 
     output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource created.')
 
 
 def update_resource(coll, args):
-    _gather_resource_attributes(coll, args)
-    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    args = _gather_resource_attributes(coll, args)
+    attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     resource = get_resource(coll, attr_name, attr_value)
 
@@ -123,19 +134,14 @@ def update_resource(coll, args):
             continue
         setattr(resource, name, value)
     resource.save()
-
-    account_groups = args.get('--groups')
-    if account_groups and isinstance(coll, AccountList):
-        groups = [g.strip() for g in account_groups.split(',')]
-        for group in groups:
-            resource.add_group(group)
+    _add_resource_to_groups(resource, args)
 
     output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource updated.')
 
 
 def delete_resource(coll, args):
-    attrs = _specialized_query(args, coll, ATTRIBUTE_MAPS)
+    attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     resource = get_resource(coll, attr_name, attr_value)
     data = get_resource_data(resource)
