@@ -1,0 +1,13 @@
+language: python
+python:
+- '2.7'
+- '3.2'
+- '3.3'
+install: pip install . --use-mirrors
+before_script: python setup.py testdep
+script:
+- tox
+branches:
+  only:
+  - master
+  - development

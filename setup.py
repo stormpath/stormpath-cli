@@ -18,11 +18,15 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 import sys
 import re
 import os
 import codecs
+import subprocess
+
+
+PY_VERSION = sys.version_info[:2]
 
 
 VERSION = '0.0.1'
@@ -31,6 +35,28 @@ VERSION = '0.0.1'
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
+
+
+class BaseCommand(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+
+class TestDepCommand(BaseCommand):
+
+    description = "install test dependencies"
+
+    def run(self):
+        cmd = ["pip", "install", "tox", "pytest", "pytest-cov"]
+        if PY_VERSION >= (3, 2):
+            cmd.append("mock")
+        ret = subprocess.call(cmd)
+        sys.exit(ret)
 
 
 def read(*parts):
@@ -80,6 +106,9 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Developers',
     ],
+    cmdclass={
+        'testdep': TestDepCommand,
+    },
     entry_points={
         'console_scripts': [
             'stormpath = stormpath_cli.main:main'
