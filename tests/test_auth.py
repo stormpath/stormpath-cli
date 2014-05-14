@@ -46,24 +46,12 @@ class TestAuth(unittest.TestCase):
         del os.environ['STORMPATH_APIKEY_FILE']
 
     def test_that_init_auth_will_find_the_users_home_dir_and_apikeyfile(self):
-        tempdir = tempfile.mkdtemp()
-        save_home = os.environ['HOME']
-        os.environ['HOME'] = tempdir
-        os.mkdir(os.path.join(tempdir, '.stormpath'))
-        temp_apikeyfile_path = os.path.join(tempdir, '.stormpath', 'apiKey.properties')
-        temp_apikeyfile = open(temp_apikeyfile_path, 'w')
-        temp_apikeyfile.close()
-
-        key_file = os.path.join(os.environ['HOME'], '.stormpath', 'apiKey.properties')
+        fd, tmpfile = tempfile.mkstemp()
+        auth.get_config_path = lambda _: tmpfile
         args = {}
         ret = auth.init_auth(args)
-        self.assertEquals(ret, {'api_key_file_location': key_file})
-        ## WARNING: if hanging this be very careful what you are passing to rmdir
-        # we don't want to delete the home directory
-        os.environ['HOME'] = save_home
-        os.unlink(temp_apikeyfile_path)
-        os.rmdir(os.path.join(tempdir, '.stormpath'))
-        os.rmdir(tempdir)
+        self.assertEquals(ret, {'api_key_file_location': tmpfile})
+        os.unlink(tmpfile)
 
     def test_that_init_auth_will_raise_a_value_error_if_not_auth_is_found(self):
         tempdir = tempfile.mkdtemp()
