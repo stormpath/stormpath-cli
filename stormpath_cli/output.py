@@ -1,6 +1,8 @@
 import collections
-from itertools import repeat, imap
+from copy import deepcopy
+from itertools import repeat
 import json
+import six
 from sys import stdout
 import logging
 
@@ -8,11 +10,12 @@ import logging
 def _remove_links(data):
     if not isinstance(data, list):
         data = [data]
-    for el in data:
+    d2 = deepcopy(data)
+    for i, el in enumerate(data):
         for k, v in el.items():
             if isinstance(v, dict):
-                del el[k]
-    return data
+                del d2[i][k]
+    return d2
 
 
 def _format_row(data, key, max_indent):
@@ -27,7 +30,7 @@ def _output_to_tty_human_readable(data, out=stdout):
     for item in data:
         # sort keys alphabetically
         ordered_data = collections.OrderedDict(sorted(item.items()))
-        max_indent = max(imap(len, ordered_data.keys()))
+        max_indent = max(map(len, ordered_data.keys()))
         for key in ordered_data.keys():
             msg = _format_row(ordered_data, key, max_indent)
             out.write(msg)
@@ -49,7 +52,11 @@ def _output_tsv(data, show_headers, out=stdout):
     keys = sorted(data[0].keys())
 
     if show_headers:
-        out.write(u'\t'.join(keys).encode('utf-8'))
+        if six.PY3:
+            d = '\t'.join(keys)
+        else:
+            d = '\t'.join(keys).encode('utf-8')
+        out.write(d)
         out.write('\n')
 
     def force_text(val):
@@ -57,13 +64,17 @@ def _output_tsv(data, show_headers, out=stdout):
         if isinstance(val, dict) and 'href' in val:
             return val['href']
         elif val is None:
-            return u''
+            return ''
         else:
-            return unicode(val)
+            return str(val)
 
     for row in data:
         output_row = [force_text(row[key]) for key in keys]
-        out.write(u'\t'.join(output_row).encode('utf-8'))
+        if six.PY3:
+            d = '\t'.join(output_row)
+        else:
+            d = '\t'.join(output_row).encode('utf-8')
+        out.write(d)
         out.write('\n')
 
 

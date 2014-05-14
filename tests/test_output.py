@@ -1,6 +1,9 @@
 import sys
 import json
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except:
+    from io import StringIO
 import unittest
 
 try:

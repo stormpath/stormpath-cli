@@ -10,12 +10,12 @@ def store_config_file(name, data):
     fpath = get_config_path(name)
 
     if not exists(dirname(fpath)):
-        makedirs(dirname(fpath), 0700)
+        makedirs(dirname(fpath), '0700')
 
     tmp = fpath + '.tmp'
     with open(tmp, 'w') as fd:
         fd.write(data)
-        chmod(tmp, 0400)
+        chmod(tmp, '0400')
     rename(tmp, fpath)
     return fpath
 
