@@ -17,6 +17,7 @@ def store_config_file(name, data):
         fd.write(data)
         chmod(tmp, 0400)
     rename(tmp, fpath)
+    return fpath
 
 
 def get_config_file(name, default=None):

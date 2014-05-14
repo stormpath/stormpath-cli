@@ -61,8 +61,9 @@ def set_context(collection, args):
         raise ValueError("Context can only be set to Application or "
             "Directory resources")
 
-    store_config_file('context.properties', '%s = %s\n' % (flag, value))
+    f = store_config_file('context.properties', '%s = %s\n' % (flag, value))
     _display_context()
+    return f
 
 
 def show_context(args):
