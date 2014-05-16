@@ -15,7 +15,13 @@ def get_resource(coll, id_name, id_value):
 def get_resource_data(resource):
     # FIXME: uses undocumented and unsupported API; this should move into the
     # SDK proper before releasing
-    return resource._store.get_resource(resource.href)
+    data = resource._store.get_resource(resource.href)
+    try:
+        # if the internal meta field sp_http_status is present just remove it
+        data.pop('sp_http_status')
+    except:
+        pass
+    return data
 
 
 def _get_context(client, args):
