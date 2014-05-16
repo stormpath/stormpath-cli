@@ -133,7 +133,7 @@ def main():
         log.error(str(ex))
         return -1
 
-    if result is not None:
+    if result is not None and (isinstance(result, list) or isinstance(result, dict)):
         output(result,
             show_links=arguments.get('--show-links', False),
             show_headers=arguments.get('--show-headers', False))
