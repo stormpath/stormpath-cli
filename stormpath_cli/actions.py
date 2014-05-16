@@ -87,6 +87,7 @@ def _gather_resource_attributes(coll, args):
         if '=' not in attr:
             raise ValueError("Unknown resource attribute: " + attr)
         name, value = attr.split('=', 1)
+        name = name.replace('-', '_')
         if name not in attrs:
             raise ValueError("Unknown resource attribute: " + name)
         args[attrs[name]] = value
