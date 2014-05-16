@@ -84,7 +84,7 @@ setup(
     include_package_data=True,
     keywords=['stormpath', 'client', 'cli'],
     license='Apache 2.0',
-    install_requires=['docopt >= 0.6.1', 'stormpath >= 1.1.0'],
+    install_requires=['docopt >= 0.6.1', 'stormpath >= 1.2.3'],
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
