@@ -43,6 +43,8 @@ def _display_context():
 
 
 def set_context(collection, args):
+    from .actions import _gather_resource_attributes
+    args = _gather_resource_attributes(collection, args)
     value = args.get('--name')
     if not value:
         raise ValueError("Resource name or href is required.")
