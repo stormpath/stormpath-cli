@@ -86,6 +86,13 @@ def main():
     arguments.update(get_context_dict())
     arguments = strip_equal_sign(arguments)
 
+    if resource and resource.find('=') != -1:
+        # Workaround for when list command is not specified
+        # and non-dash attributes are used
+        arguments['<attributes>'].append(resource)
+        arguments['<resource>'] = None
+        resource = None
+
     if action in AVAILABLE_RESOURCES and not resource:
         resource = action
         action = DEFAULT_ACTION
