@@ -23,8 +23,8 @@ def _get_context(client, args):
     d = args.get('--in-directory')
 
     if a and d:
-        raise ValueError("Can't specify both --in-application "
-            "and --in-directory")
+        # setting a directory overrides setting an application
+        return get_resource(client.directories, 'name', d)
     elif a:
         return get_resource(client.applications, 'name', a)
     elif d:
