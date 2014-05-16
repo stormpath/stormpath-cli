@@ -8,6 +8,7 @@ import logging
 
 
 def _remove_links(data):
+    """Removes nested/linked resources from the data output."""
     if not isinstance(data, list):
         data = [data]
     d2 = deepcopy(data)
@@ -19,6 +20,8 @@ def _remove_links(data):
 
 
 def _format_row(data, key, max_indent):
+    """Helper function used for printing a human readable and
+    nicely aligned output"""
     d = data[key] if data[key] else 'null'
     spacing = max_indent - len(key)
     spaces = "".join(repeat(" ", spacing))
@@ -27,7 +30,7 @@ def _format_row(data, key, max_indent):
 
 
 def _sort(data):
-    """Sort the keys in the dictionary alphabetically but put name and href first"""
+    """Sort the keys in the data dict alphabetically but put name and href first"""
     try:
         name = data.pop('name')
         href = data.pop('href')
@@ -42,6 +45,8 @@ def _sort(data):
 
 
 def _output_to_tty_human_readable(data, out=stdout):
+    """The default output function, used for printing a nicely aligned
+    human readable output"""
     for item in data:
         ordered_data = _sort(item)
         max_indent = max(map(len, ordered_data.keys()))
@@ -52,11 +57,14 @@ def _output_to_tty_human_readable(data, out=stdout):
 
 
 def _output_to_tty_json(data, out=stdout):
+    """Helper function for printing JSON output"""
     out.write(json.dumps(data, indent=2, sort_keys=True))
     out.write('\n')
 
 
 def _output_tsv(data, show_headers, out=stdout):
+    """Helper function for printing tab separates values to the output.
+    Used by default when CLI output is piped"""
     if not isinstance(data, list):
         data = [data]
 
@@ -93,6 +101,8 @@ def _output_tsv(data, show_headers, out=stdout):
 
 
 def output(data, show_links=False, show_headers=False, output_json=False):
+    """Main output function used for printing to stdout. It will invoke the correct
+    helper output function (ie. human readable/json/tsv)"""
     if not isinstance(data, list):
         data = [data]
     if not show_links:
@@ -114,6 +124,7 @@ def get_logger():
 
 
 def setup_output(verbose):
+    """Helper function used for setting the global logging level."""
     if verbose:
         level = logging.DEBUG
     elif stdout.isatty():

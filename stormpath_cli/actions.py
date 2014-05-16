@@ -56,6 +56,8 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
 
 
 def _specialized_query(coll, args, maps):
+    """Formats the params in the right format before passing
+    them to the needed sdk method."""
     json_rep = args.get('--json')
     if json_rep:
         try:
@@ -73,6 +75,8 @@ def _specialized_query(coll, args, maps):
 
 
 def _primary_attribute(coll, attrs):
+    """Checks to see if the required primary attributes ie. identifiers like
+    -n or --name are present."""
     attr_name = RESOURCE_PRIMARY_ATTRIBUTES[type(coll)]
     attr_value = attrs.get(attr_name)
     if not attr_value:
@@ -81,6 +85,7 @@ def _primary_attribute(coll, attrs):
 
 
 def _gather_resource_attributes(coll, args):
+    """Allows using --name/name attributes, ie. with and without the dash."""
     attrs = ATTRIBUTE_MAPS[type(coll)]
 
     for attr in args.get('<attributes>', []):
@@ -95,6 +100,8 @@ def _gather_resource_attributes(coll, args):
 
 
 def _add_resource_to_groups(resource, args):
+    """Helper function for adding a resource to a group.
+    Specifically this is only used for adding Accounts to Groups."""
     account_groups = args.get('--groups')
     if account_groups and hasattr(resource, 'add_group'):
         groups = [g.strip() for g in account_groups.split(',')]
@@ -104,6 +111,7 @@ def _add_resource_to_groups(resource, args):
 
 
 def list_resources(coll, args):
+    """List action: Lists the requested Resource collection."""
     args = _gather_resource_attributes(coll, args)
     q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
     if q:
@@ -113,6 +121,7 @@ def list_resources(coll, args):
 
 
 def create_resource(coll, args):
+    """Create action: Creates a Resource."""
     args = _gather_resource_attributes(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
@@ -126,6 +135,8 @@ def create_resource(coll, args):
 
 
 def update_resource(coll, args):
+    """Update actions: Updates a Resource.
+    Requires an identifier like --name."""
     args = _gather_resource_attributes(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
@@ -143,6 +154,8 @@ def update_resource(coll, args):
 
 
 def delete_resource(coll, args):
+    """Delete action: Deletes a Resource.
+    Requires an identifier like --name or --email."""
     args = _gather_resource_attributes(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)

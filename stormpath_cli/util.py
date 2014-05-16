@@ -3,10 +3,12 @@ from os.path import join, dirname, exists
 
 
 def get_config_path(name):
+    """Helper function for getting the cli config file path."""
     return join(environ.get('HOME', '/'), '.stormpath', 'cli', name)
 
 
 def store_config_file(name, data):
+    """Stores cli config file."""
     fpath = get_config_path(name)
 
     if not exists(dirname(fpath)):
@@ -21,6 +23,7 @@ def store_config_file(name, data):
 
 
 def get_config_file(name, default=None):
+    """Helper function for getting the config file data."""
     fpath = get_config_path(name)
 
     if exists(fpath):
@@ -30,6 +33,8 @@ def get_config_file(name, default=None):
 
 
 def strip_equal_sign(arguments):
+    """Helper function for a workaround against docopt adding the equal
+    sign to an attribute."""
     for k, v in arguments.items():
         if v and isinstance(v, str) and (k.startswith('--') or k.startswith('-')):
             arguments.update({k: v.lstrip('=')})

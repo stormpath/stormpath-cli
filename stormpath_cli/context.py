@@ -7,6 +7,8 @@ from .util import get_config_path, get_config_file, store_config_file
 
 
 def get_context_dict(quiet=True):
+    """Read the current Application/Directory context from the
+    cli context file."""
 
     data = get_config_file('context.properties')
     if not data or '=' not in data:
@@ -22,6 +24,7 @@ def get_context_dict(quiet=True):
 
 
 def _display_context():
+    """Helper function for printing the current context"""
     log = get_logger()
 
     ctx = get_context_dict(quiet=True)
@@ -43,6 +46,8 @@ def _display_context():
 
 
 def set_context(collection, args):
+    """Set the context to the requested application/directory and
+    store it to the context file"""
     from .actions import _gather_resource_attributes
     args = _gather_resource_attributes(collection, args)
     value = args.get('--name')

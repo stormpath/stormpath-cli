@@ -9,6 +9,17 @@ from .util import get_config_path, store_config_file
 
 
 def init_auth(args, quiet=True):
+    """Check's what authentication method to use for talking to the
+    Stormpath API.
+
+    Auth methods by descending precedence:
+
+        apikey flag - Highest precedence
+        apikeyfile flag - Evaluated if no apikey flag is set
+        env variables - Evaluated if no flags are set
+        apiKey.properties file in HOME directory - lowest precedence, used if no
+            other method are specified.
+    """
     log = get_logger()
 
     api_key = args.get('--apikey')
@@ -72,6 +83,8 @@ def init_auth(args, quiet=True):
 
 
 def _ask_for_credentials():
+    """Helper function used by the setup action to prompt the user
+    for auth credentials."""
     print("Please input your API Key ID and API Key Secret.")
     print("(visit http://docs.stormpath.com/rest/quickstart/"
         "#get-an-api-key for more information)")
@@ -90,6 +103,8 @@ def _ask_for_credentials():
 
 
 def setup_credentials(arguments):
+    """Setup action: Guides the user through the process
+    of entering this API KEY Credentials for the Stormpath API."""
     log = get_logger()
 
     try:

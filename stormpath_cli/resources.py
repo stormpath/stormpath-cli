@@ -2,6 +2,7 @@ from stormpath.client import Client
 
 
 def get_resource(coll, id_name, id_value):
+    """Makes sure a requested Resource actually exists."""
     if id_value.startswith(Client.BASE_URL):
         return coll.get(id_value)
 
@@ -13,6 +14,7 @@ def get_resource(coll, id_name, id_value):
 
 
 def get_resource_data(resource):
+    """Get's the dict data for a requested Resource"""
     # FIXME: uses undocumented and unsupported API; this should move into the
     # SDK proper before releasing
     data = resource._store.get_resource(resource.href)
@@ -25,6 +27,7 @@ def get_resource_data(resource):
 
 
 def _get_context(client, args):
+    """Gets the current context"""
     a = args.get('--in-application')
     d = args.get('--in-directory')
 
@@ -41,10 +44,12 @@ def _get_context(client, args):
 
 
 def get_accounts(client, args):
+    """Gets all accounts from the current context"""
     return _get_context(client, args).accounts
 
 
 def get_groups(client, args):
+    """Gets all groups from the current context"""
     return _get_context(client, args).groups
 
 
