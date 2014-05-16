@@ -26,10 +26,24 @@ def _format_row(data, key, max_indent):
     return row_repr
 
 
+def _sort(data):
+    """Sort the keys in the dictionary alphabetically but put name and href first"""
+    try:
+        name = data.pop('name')
+        href = data.pop('href')
+    except KeyError:
+        d1 = collections.OrderedDict(sorted(data.items()))
+        return d1
+
+    d1 = collections.OrderedDict(sorted(data.items()))
+    d2 = collections.OrderedDict([('name', name), ('href', href)])
+    d2.update(d1)
+    return d2
+
+
 def _output_to_tty_human_readable(data, out=stdout):
     for item in data:
-        # sort keys alphabetically
-        ordered_data = collections.OrderedDict(sorted(item.items()))
+        ordered_data = _sort(item)
         max_indent = max(map(len, ordered_data.keys()))
         for key in ordered_data.keys():
             msg = _format_row(ordered_data, key, max_indent)
