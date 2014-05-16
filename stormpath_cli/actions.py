@@ -104,6 +104,7 @@ def _add_resource_to_groups(resource, args):
 
 
 def list_resources(coll, args):
+    args = _gather_resource_attributes(coll, args)
     q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
@@ -142,6 +143,7 @@ def update_resource(coll, args):
 
 
 def delete_resource(coll, args):
+    args = _gather_resource_attributes(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     resource = get_resource(coll, attr_name, attr_value)
