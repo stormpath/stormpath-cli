@@ -4,7 +4,8 @@ from os.path import join, dirname, exists
 
 def get_config_path(name):
     """Helper function for getting the cli config file path."""
-    return join(environ.get('HOME', '/'), '.stormpath', 'cli', name)
+    sp_root_dir = join(environ.get('HOME', '/'), '.stormpath')
+    return join(sp_root_dir, 'cli', name)
 
 
 def store_config_file(name, data):
@@ -12,12 +13,13 @@ def store_config_file(name, data):
     fpath = get_config_path(name)
 
     if not exists(dirname(fpath)):
-        makedirs(dirname(fpath), 700)
+        makedirs(dirname(fpath), 0o700)
 
     tmp = fpath + '.tmp'
     with open(tmp, 'w') as fd:
         fd.write(data)
-        chmod(tmp, 400)
+        chmod(tmp, 0o400)
+
     rename(tmp, fpath)
     return fpath
 
