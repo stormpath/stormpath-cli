@@ -36,6 +36,7 @@ List/search/create options:
     -s <name>, --surname <name>             Surname. Valid for accounts.
     -f <name>, --full-name <name>           Full name. Valid for accounts.
     -g <name>, --given-name <name>          Given name. Valid for accounts.
+    -m <name>, --middle-name <name>         Middle name. Valid for accounts.
     -e <email>, --email <email>             Email address. Valid for accounts.
     -u <username>, --username <username>    Username. Valid for accounts.
     -p <password>, --password <password>    Password. Valid for accounts.
