@@ -118,7 +118,7 @@ def list_resources(coll, args):
     q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
     if q:
         coll = coll.query(**q)
-    output([get_resource_data(r) for r in coll.items],
+    output([get_resource_data(r) for r in coll],
         show_links=args.get('--show-links', False),
         output_json=args.get('--output-json'))
 
