@@ -29,18 +29,18 @@ Options:
     -L, --show-links                        Show links to related resources
 
 List/search/create options:
-    -n <name>, --name <name>                Match applications/directories/groups with name <name>
-    -d <desc>, --description <desc>         Match applications/directories/groups with description <desc>
-    -q <query>, --query <query>             Match resources according to the filter <query>
-    -S <status>, --status <status>          Match resources with status <status>
-    -s <name>, --surname <name>             Match accounts with surname <name>
-    -f <name>, --full-name <name>           Match accounts with full name <name>
-    -g <name>, --given-name <name>          Match accounts with given name <name>
-    -e <email>, --email <email>             Match accounts with email <email>
-    -u <username>, --username <username>    Account username
-    -p <password>, --password <password>    Account password
-    -G <group>..., --groups <group>...      Add account to groups
-    -R, --create-directory                  When creating an application create the directory
+    -n <name>, --name <name>                Resource name. Valid for applications, directories, grops.
+    -d <desc>, --description <desc>         Resource description. Valid for applications, directories and groups.
+    -q <query>, --query <query>             Custom query resource collection. Valid for all resources.
+    -S <status>, --status <status>          Resource status. Enum: ENABLED, DISABLED, UNVERIFIED. Valid for accounts.
+    -s <name>, --surname <name>             Surname. Valid for accounts.
+    -f <name>, --full-name <name>           Full name. Valid for accounts.
+    -g <name>, --given-name <name>          Given name. Valid for accounts.
+    -e <email>, --email <email>             Email address. Valid for accounts.
+    -u <username>, --username <username>    Username. Valid for accounts.
+    -p <password>, --password <password>    Password. Valid for accounts.
+    -G <group>..., --groups <group>...      Groups to which to add a resource. Valid for accounts.
+    -R, --create-directory                  When creating an application create the directory. Valid for applications.
 
 
 Specific search options are only available for resources that have matching
@@ -48,15 +48,15 @@ attributes. Option '--query' matches on substrings, but all of the other search
 options require an exact match.
 
 Deletion flags:
-    -F, --force                             Don't ask confirmation before deleting the resource
+    -F, --force                             Don't ask confirmation before deleting the resource. Valid for all resources.
 
 Specifying the application or directory context (for accounts and groups):
     -A <app>, --in-application <app>        Set context to application <app>
     -D <dir>, --in-directory <dir>          Set context to directory <dir>
 
 Use json input:
-    -j <json>, --json <json>                Overrides the flags and uses json for input
-    --output-json                           Overrides the default human readable output to json
+    -j <json>, --json <json>                Overrides the flags and uses json for input. Valid for all resources.
+    --output-json                           Overrides the default human readable output to json. Valid for all resources
 
 For -A and -D options, the application and directory can be specified by their
 name or URL.
