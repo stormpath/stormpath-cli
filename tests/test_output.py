@@ -47,7 +47,7 @@ class TestOutput(unittest.TestCase):
         try:
             out = StringIO()
             sys.stdout = out
-            output._output_tsv(data=data, show_headers=False, out=out)
+            output._output_tsv(data=data, out=out)
             ret = out.getvalue().strip()
             self.assertEquals(ret, 'test_description\ttest')
         finally:

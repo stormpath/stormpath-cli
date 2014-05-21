@@ -27,7 +27,6 @@ Options:
     -a <key:secret>, --apikey <key:secret>  Authenticate with provided key and secret
     -k <file>, --apikeyfile <file>          Use credentials from <file>
     -L, --show-links                        Show links to related resources
-    -H, --show-headers                      If in TSV mode, show column headers in the first line
 
 List/search/create options:
     -n <name>, --name <name>                Match applications/directories/groups with name <name>
@@ -142,8 +141,7 @@ def main():
 
     if result is not None and (isinstance(result, list) or isinstance(result, dict)):
         output(result,
-            show_links=arguments.get('--show-links', False),
-            show_headers=arguments.get('--show-headers', False))
+            show_links=arguments.get('--show-links', False))
     return 0
 
 

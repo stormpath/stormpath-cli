@@ -62,7 +62,7 @@ def _output_to_tty_json(data, out=stdout):
     out.write('\n')
 
 
-def _output_tsv(data, show_headers, out=stdout):
+def _output_tsv(data, out=stdout):
     """Helper function for printing tab separates values to the output.
     Used by default when CLI output is piped"""
     if not isinstance(data, list):
@@ -72,14 +72,6 @@ def _output_tsv(data, show_headers, out=stdout):
         return
 
     keys = sorted(data[0].keys())
-
-    if show_headers:
-        if six.PY3:
-            d = '\t'.join(keys)
-        else:
-            d = '\t'.join(keys).encode('utf-8')
-        out.write(d)
-        out.write('\n')
 
     def force_text(val):
         # if we're including links in TSV mode, we're only interested in href
@@ -100,7 +92,7 @@ def _output_tsv(data, show_headers, out=stdout):
         out.write('\n')
 
 
-def output(data, show_links=False, show_headers=False, output_json=False):
+def output(data, show_links=False, output_json=False):
     """Main output function used for printing to stdout. It will invoke the correct
     helper output function (ie. human readable/json/tsv)"""
     if not isinstance(data, list):
@@ -116,7 +108,7 @@ def output(data, show_links=False, show_headers=False, output_json=False):
             stdout.write("\nTotal number of Resources returned: %s\n" %
                 len(data))
     else:
-        _output_tsv(data, show_headers=show_headers)
+        _output_tsv(data)
 
 
 def get_logger():
