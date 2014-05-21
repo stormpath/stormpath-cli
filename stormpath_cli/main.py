@@ -28,7 +28,6 @@ Options:
     -k <file>, --apikeyfile <file>          Use credentials from <file>
     -L, --show-links                        Show links to related resources
     -H, --show-headers                      If in TSV mode, show column headers in the first line
-    -R, --create-directory                  When creating an application create the directory
 
 List/search/create options:
     -n <name>, --name <name>                Match applications/directories/groups with name <name>
@@ -42,6 +41,7 @@ List/search/create options:
     -u <username>, --username <username>    Account username
     -p <password>, --password <password>    Account password
     -G <group>..., --groups <group>...      Add account to groups
+    -R, --create-directory                  When creating an application create the directory
 
 
 Specific search options are only available for resources that have matching
