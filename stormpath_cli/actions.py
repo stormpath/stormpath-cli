@@ -20,6 +20,7 @@ ATTRIBUTE_MAPS = {
         given_name='--given-name',
         surname='--surname',
         password='--password',
+        status='--status',
     ),
     ApplicationList: dict(
         name='--name',
