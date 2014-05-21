@@ -18,6 +18,7 @@ ATTRIBUTE_MAPS = {
         email='--email',
         full_name='--full-name',
         given_name='--given-name',
+        middle_name='--middle-name',
         surname='--surname',
         password='--password',
         status='--status',
