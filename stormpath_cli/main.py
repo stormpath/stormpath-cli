@@ -108,8 +108,8 @@ def main():
         return 0 if AVAILABLE_ACTIONS[action](arguments) else -1
 
     if not resource:
-        log.error("A resource type is required. See 'stormpath --help' for "
-            "list of available resource types.")
+        log.error("A resource type is required. Available resources: %s. "
+            "Please see 'stormpath --help'" % ", ".join(sorted(AVAILABLE_RESOURCES.keys())))
         return -1
 
     if resource not in AVAILABLE_RESOURCES:
