@@ -255,6 +255,8 @@ Output:
     Current context set to the application 'My Application'.
     Account / Groups actions are configured to target 'My Application'.
 
+Note: To clear the current context use the `stormpath unset` command.
+
 Note: Resource attributes can be specified with or without the `--`. For instance:
 
     stormpath create account -e user@email.com username=dvader given-name=Anakin surname=Skywalker

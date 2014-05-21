@@ -1,4 +1,4 @@
-from os import environ, makedirs, rename, chmod
+from os import environ, makedirs, rename, chmod, unlink
 from os.path import join, dirname, exists
 
 
@@ -22,6 +22,12 @@ def store_config_file(name, data):
 
     rename(tmp, fpath)
     return fpath
+
+
+def delete_config_file(name):
+    fpath = get_config_path(name)
+    unlink(fpath)
+    return True
 
 
 def get_config_file(name, default=None):

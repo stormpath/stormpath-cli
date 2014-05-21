@@ -12,6 +12,7 @@ Actions:
     set      Set context for user/group actions
     context  Show currently used context for user/group actions
     setup    Set up credentials for accessing the Stormpath API
+    unset    Deletes the current context
 
 Resources:
     application  Application Resource

@@ -3,7 +3,7 @@ from stormpath.resources.directory import DirectoryList
 
 from .output import get_logger
 from .resources import get_resource
-from .util import get_config_path, get_config_file, store_config_file
+from .util import get_config_path, get_config_file, store_config_file, delete_config_file
 
 
 def get_context_dict(quiet=True):
@@ -71,6 +71,17 @@ def set_context(collection, args):
     f = store_config_file('context.properties', '%s = %s\n' % (flag, value))
     _display_context()
     return f
+
+
+def delete_context(args):
+    log = get_logger()
+    try:
+        ret = delete_config_file('context.properties')
+    except OSError:
+        log.error('No context found.')
+        return False
+    log.info('Context cleared.')
+    return ret
 
 
 def show_context(args):
