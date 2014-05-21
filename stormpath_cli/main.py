@@ -33,7 +33,6 @@ List/search/create options:
     -q <query>, --query <query>             Custom query resource collection. Valid for all resources.
     -S <status>, --status <status>          Resource status. Enum: ENABLED, DISABLED, UNVERIFIED. Valid for accounts.
     -s <name>, --surname <name>             Surname. Valid for accounts.
-    -f <name>, --full-name <name>           Full name. Valid for accounts.
     -g <name>, --given-name <name>          Given name. Valid for accounts.
     -m <name>, --middle-name <name>         Middle name. Valid for accounts.
     -e <email>, --email <email>             Email address. Valid for accounts.
