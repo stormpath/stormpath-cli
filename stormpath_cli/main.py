@@ -18,7 +18,6 @@ Resources:
     directory    Directory Resource
     group        Group Resource
     account      Account Resource
-    user         User Resource
 
 Options:
     -h, --help                              Lists help
