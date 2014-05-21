@@ -119,6 +119,7 @@ def list_resources(coll, args):
     if q:
         coll = coll.query(**q)
     output([get_resource_data(r) for r in coll.items],
+        show_links=args.get('--show-links', False),
         output_json=args.get('--output-json'))
 
 

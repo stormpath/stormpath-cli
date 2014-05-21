@@ -19,6 +19,18 @@ def _remove_links(data):
     return d2
 
 
+def _show_links(data):
+    """Extracts hrefs from nested/linked resources from the data output."""
+    if not isinstance(data, list):
+        data = [data]
+    d2 = deepcopy(data)
+    for i, el in enumerate(data):
+        for k, v in el.items():
+            if isinstance(v, dict):
+                d2[i][k] = d2[i][k].get('href')
+    return d2
+
+
 def _format_row(data, key, max_indent):
     """Helper function used for printing a human readable and
     nicely aligned output"""
@@ -99,6 +111,8 @@ def output(data, show_links=False, output_json=False):
         data = [data]
     if not show_links:
         data = _remove_links(data)
+    else:
+        data = _show_links(data)
 
     if stdout.isatty():
         if output_json:
