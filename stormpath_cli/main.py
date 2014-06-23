@@ -62,6 +62,8 @@ For -A and -D options, the application and directory can be specified by their
 name or URL.
 """
 
+from sys import version_info as vi
+
 from docopt import docopt
 from stormpath.client import Client
 from stormpath.error import Error as StormpathError
@@ -73,6 +75,14 @@ from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
 from stormpath_cli.util import strip_equal_sign
+
+from . import __version__ as version
+
+
+USER_AGENT = 'stormpath-cli/%s (python %s)' % (
+    version,
+    '%s.%s.%s' % (vi.major, vi.minor, vi.micro),
+)
 
 
 def main():
@@ -120,7 +130,7 @@ def main():
 
     try:
         auth_args = init_auth(arguments)
-        client = Client(**auth_args)
+        client = Client(**auth_args, user_agent=user_agent)
     except ValueError as ex:
         log.error(str(ex))
         return -1
