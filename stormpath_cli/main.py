@@ -130,7 +130,7 @@ def main():
 
     try:
         auth_args = init_auth(arguments)
-        client = Client(**auth_args, user_agent=user_agent)
+        client = Client(user_agent=USER_AGENT, **auth_args)
     except ValueError as ex:
         log.error(str(ex))
         return -1
