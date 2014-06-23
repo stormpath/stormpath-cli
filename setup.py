@@ -2,26 +2,27 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import unicode_literals
-from __future__ import absolute_import
-import sys
-import re
-import os
-import codecs
-import subprocess
+from __future__ import absolute_import, unicode_literals
+
+from codecs import open
+from os import system
+from os.path import dirname, join
+from re import M, search
+from subprocess import call
+from sys import argv, exit, version_info
 
 from setuptools import Command, find_packages, setup
 
 
-PY_VERSION = sys.version_info[:2]
+PY_VERSION = version_info[:2]
 
 
 VERSION = '0.0.1'
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
+if argv[-1] == 'publish':
+    system('python setup.py sdist upload')
+    exit()
 
 
 class BaseCommand(Command):
@@ -42,23 +43,23 @@ class TestDepCommand(BaseCommand):
         cmd = ["pip", "install", "tox", "pytest", "pytest-cov"]
         if PY_VERSION >= (3, 2):
             cmd.append("mock")
-        ret = subprocess.call(cmd)
-        sys.exit(ret)
+        ret = call(cmd)
+        exit(ret)
 
 
 def read(*parts):
-    path = os.path.join(os.path.dirname(__file__), *parts)
-    with codecs.open(path, encoding='utf-8') as fobj:
+    path = join(dirname(__file__), *parts)
+    with open(path, encoding='utf-8') as fobj:
         return fobj.read()
 
 
 def find_version(*file_paths):
     version_file = read(*file_paths)
-    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-        version_file, re.M)
+    version_match = search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+        version_file, M)
     if version_match:
         return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
+    eaise RuntimeError("Unable to find version string.")
 
 setup(
     name='stormpath-cli',
