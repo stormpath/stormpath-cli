@@ -52,7 +52,8 @@ def find_version(*file_paths):
         version_file, M)
     if version_match:
         return version_match.group(1)
-    eaise RuntimeError("Unable to find version string.")
+    raise RuntimeError("Unable to find version string.")
+
 
 setup(
     name='stormpath-cli',
