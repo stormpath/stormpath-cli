@@ -3,11 +3,8 @@ python:
 - '2.7'
 - '3.2'
 - '3.3'
-install: pip install . --use-mirrors
-before_script: python setup.py testdep
+install:
+- python setup.py develop
+- pip install -r requirements.txt
 script:
 - tox
-branches:
-  only:
-  - master
-  - development
