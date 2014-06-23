@@ -14,31 +14,31 @@ from .resources import get_resource, get_resource_data
 
 ATTRIBUTE_MAPS = {
     AccountList: dict(
-        username='--username',
-        email='--email',
-        given_name='--given-name',
-        middle_name='--middle-name',
-        surname='--surname',
-        password='--password',
-        status='--status',
+        username = '--username',
+        email = '--email',
+        given_name = '--given-name',
+        middle_name = '--middle-name',
+        surname = '--surname',
+        password = '--password',
+        status = '--status',
     ),
     ApplicationList: dict(
-        name='--name',
-        description='--description',
+        name = '--name',
+        description = '--description',
     ),
     DirectoryList: dict(
-        name='--name',
-        description='--description',
+        name = '--name',
+        description = '--description',
     ),
     GroupList: dict(
-        name='--name',
-        description='--description',
+        name = '--name',
+        description = '--description',
     ),
 }
 
 EXTRA_MAPS = {
     ApplicationList: dict(
-        create_directory='--create-directory'
+        create_directory = '--create-directory'
     )
 }
 
@@ -118,8 +118,8 @@ def list_resources(coll, args):
     if q:
         coll = coll.query(**q)
     output([get_resource_data(r) for r in coll],
-        show_links=args.get('--show-links', False),
-        output_json=args.get('--output-json'))
+        show_links = args.get('--show-links', False),
+        output_json = args.get('--output-json'))
 
 
 def create_resource(coll, args):
