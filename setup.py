@@ -15,8 +15,6 @@ from setuptools import Command, find_packages, setup
 
 
 PY_VERSION = version_info[:2]
-
-
 VERSION = '0.0.1'
 
 
