@@ -23,8 +23,9 @@ if argv[-1] == 'publish':
     exit()
 
 
-class BaseCommand(Command):
-    """A generic setup.py command."""
+class RunTests(Command):
+    """Run all tests."""
+    description = 'run tests'
     user_options = []
 
     def initialize_options(self):
@@ -33,19 +34,10 @@ class BaseCommand(Command):
     def finalize_options(self):
         pass
 
-
-class TestDepCommand(BaseCommand):
-    """Install all test dependencies."""
-
-    description = 'install test dependencies'
-
     def run(self):
-        cmd = ['pip', 'install', 'tox', 'pytest', 'pytest-cov']
-
-        if PY_VERSION >= (3, 2):
-            cmd.append('mock')
-
-        exit(call(cmd))
+        """Run the tests."""
+        errno = call(['python', 'setup.py', 'test'])
+        raise SystemExit(errno)
 
 
 def read(*parts):
@@ -95,9 +87,7 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Developers',
     ],
-    cmdclass={
-        'testdep': TestDepCommand,
-    },
+    cmdclass = {'test': RunTests},
     entry_points={
         'console_scripts': [
             'stormpath = stormpath_cli.main:main'
