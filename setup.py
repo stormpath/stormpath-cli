@@ -25,7 +25,7 @@ class RunTests(Command):
 
     def run(self):
         """Run the tests."""
-        raise SystemExit(call(['tox']))
+        raise SystemExit(call(['py.test']))
 
 
 setup(
