@@ -4,12 +4,13 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from setuptools import setup, find_packages, Command
 import sys
 import re
 import os
 import codecs
 import subprocess
+
+from setuptools import Command, find_packages, setup
 
 
 PY_VERSION = sys.version_info[:2]
