@@ -2,25 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import absolute_import, unicode_literals
-
-from codecs import open
-from os import system
-from os.path import dirname, join
-from re import M, search
 from subprocess import call
-from sys import argv, exit, version_info
+from sys import version_info
 
 from setuptools import Command, find_packages, setup
+from stormpath_cli import __version__ as version
 
 
 PY_VERSION = version_info[:2]
-VERSION = '0.0.1'
-
-
-if argv[-1] == 'publish':
-    system('python setup.py sdist upload')
-    exit()
 
 
 class RunTests(Command):
@@ -36,30 +25,14 @@ class RunTests(Command):
 
     def run(self):
         """Run the tests."""
-        errno = call(['python', 'setup.py', 'test'])
-        raise SystemExit(errno)
-
-
-def read(*parts):
-    path = join(dirname(__file__), *parts)
-    with open(path, encoding='utf-8') as fobj:
-        return fobj.read()
-
-
-def find_version(*file_paths):
-    version_file = read(*file_paths)
-    version_match = search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-        version_file, M)
-    if version_match:
-        return version_match.group(1)
-    raise RuntimeError("Unable to find version string.")
+        raise SystemExit(call(['tox']))
 
 
 setup(
 
     # Basic package information:
     name = 'stormpath-cli',
-    version = find_version('stormpath_cli', '__init__.py'),
+    version = version,
     description = 'Official command line interface for Stormpath.',
     url = 'https://github.com/stormpath/stormpath-cli',
     packages = find_packages(),
