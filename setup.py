@@ -24,6 +24,7 @@ if argv[-1] == 'publish':
 
 
 class BaseCommand(Command):
+    """A generic setup.py command."""
     user_options = []
 
     def initialize_options(self):
@@ -34,15 +35,17 @@ class BaseCommand(Command):
 
 
 class TestDepCommand(BaseCommand):
+    """Install all test dependencies."""
 
-    description = "install test dependencies"
+    description = 'install test dependencies'
 
     def run(self):
-        cmd = ["pip", "install", "tox", "pytest", "pytest-cov"]
+        cmd = ['pip', 'install', 'tox', 'pytest', 'pytest-cov']
+
         if PY_VERSION >= (3, 2):
-            cmd.append("mock")
-        ret = call(cmd)
-        exit(ret)
+            cmd.append('mock')
+
+        exit(call(cmd))
 
 
 def read(*parts):
