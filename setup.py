@@ -56,18 +56,27 @@ def find_version(*file_paths):
 
 
 setup(
-    name='stormpath-cli',
-    version=find_version("stormpath_cli", "__init__.py"),
-    author='Stormpath Inc.',
-    author_email='python@stormpath.com',
-    description='Official command line interface for the Stormpath REST API',
-    url='https://github.com/stormpath/stormpath-cli',
-    packages=find_packages(),
-    include_package_data=True,
-    keywords=['stormpath', 'client', 'cli'],
-    license='Apache 2.0',
-    install_requires=['docopt >= 0.6.1', 'stormpath >= 1.2.3'],
-    classifiers=[
+
+    # Basic package information:
+    name = 'stormpath-cli',
+    version = find_version('stormpath_cli', '__init__.py'),
+    description = 'Official command line interface for Stormpath.',
+    url = 'https://github.com/stormpath/stormpath-cli',
+    packages = find_packages(),
+    include_package_data = True,
+
+    # Author information:
+    author = 'Stormpath Inc.',
+    author_email = 'python@stormpath.com',
+
+    # Metadata:
+    keywords = ['stormpath', 'client', 'cli', 'security', 'authentication'],
+    license = 'Apache 2.0',
+    install_requires = [
+        'docopt>=0.6.1',
+        'stormpath>=1.2.4',
+    ],
+    classifiers = [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
@@ -88,10 +97,13 @@ setup(
         'Environment :: Console',
         'Intended Audience :: Developers',
     ],
+
+    # Script information:
     cmdclass = {'test': RunTests},
-    entry_points={
+    entry_points = {
         'console_scripts': [
             'stormpath = stormpath_cli.main:main'
         ]
     },
+
 )
