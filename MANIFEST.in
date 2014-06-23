@@ -1,2 +1,2 @@
-include README.md CHANGES.md
+include README.md CHANGES.md tox.ini
 recursive-exclude test *.py *.yml
