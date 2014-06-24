@@ -25,6 +25,7 @@ ATTRIBUTE_MAPS = {
     ApplicationList: dict(
         name = '--name',
         description = '--description',
+        href = '--href',
     ),
     DirectoryList: dict(
         name = '--name',
@@ -193,3 +194,4 @@ AVAILABLE_ACTIONS = {
 
 LOCAL_ACTIONS = ('setup', 'context', 'unset')
 DEFAULT_ACTION = 'list'
+SET_ACTION = 'set'

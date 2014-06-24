@@ -69,7 +69,7 @@ from stormpath.client import Client
 from stormpath.error import Error as StormpathError
 
 from stormpath_cli.actions import AVAILABLE_ACTIONS, LOCAL_ACTIONS, \
-    DEFAULT_ACTION
+    DEFAULT_ACTION, SET_ACTION
 from stormpath_cli.auth import init_auth
 from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
@@ -105,6 +105,11 @@ def main():
     if action in AVAILABLE_RESOURCES and not resource:
         resource = action
         action = DEFAULT_ACTION
+
+    if action == SET_ACTION:
+        for i, atr in enumerate(arguments.get('<attributes>')):
+            if atr.startswith(Client.BASE_URL):
+                arguments['<attributes>'][i] = 'href=' + atr
 
     if not action:
         log.error(__doc__.strip('\n'))

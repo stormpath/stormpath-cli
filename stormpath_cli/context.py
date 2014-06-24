@@ -50,7 +50,7 @@ def set_context(collection, args):
     store it to the context file"""
     from .actions import _gather_resource_attributes
     args = _gather_resource_attributes(collection, args)
-    value = args.get('--name')
+    value = args.get('--name') or args.get('--href')
     if not value:
         raise ValueError("Resource name or href is required.")
 
