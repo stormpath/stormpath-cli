@@ -29,7 +29,7 @@ Options:
     -L, --show-links                        Show links to related resources
 
 List/search/create options:
-    -n <name>, --name <name>                Resource name. Valid for applications, directories, grops.
+    -n <name>, --name <name>                Resource name. Valid for applications, directories, groups.
     -d <desc>, --description <desc>         Resource description. Valid for applications, directories and groups.
     -q <query>, --query <query>             Custom query resource collection. Valid for all resources.
     -S <status>, --status <status>          Resource status. Enum: ENABLED, DISABLED, UNVERIFIED. Valid for accounts.
