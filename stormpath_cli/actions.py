@@ -166,10 +166,15 @@ def delete_resource(coll, args):
     data = get_resource_data(resource)
     force = args.get('--force', False)
 
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
     if not force:
         print("Are you sure you want to delete the following resource?")
         print(json.dumps(data, indent=2, sort_keys=True))
-        resp = raw_input('Delete this resource [y/N]? ')
+        resp = input('Delete this resource [y/N]? ')
         if resp.upper() != 'Y':
             return
     else:
