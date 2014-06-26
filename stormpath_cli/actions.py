@@ -65,7 +65,7 @@ def _specialized_query(coll, args, maps):
         try:
             return json.loads(json_rep)
         except ValueError as e:
-            raise ValueError("Error parsing JSON: {}".format(e))
+            raise ValueError("Error parsing JSON: %s" % e)
     ctype = type(coll)
     pmap = maps.get(ctype, {})
     params = {}
