@@ -141,3 +141,16 @@ def setup_output(verbose):
     logging.basicConfig(format='%(message)s', level=level)
     logging.getLogger("requests").propagate = False
     return get_logger()
+
+def prompt(arg, msg):
+    from getpass import getpass
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
+    if arg == 'password':
+        res = getpass(prompt=msg + ": ")
+    else:
+        res = input(msg + ": ")
+    return res

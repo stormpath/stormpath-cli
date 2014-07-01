@@ -41,6 +41,7 @@ List/search/create options:
     -p <password>, --password <password>    Password. Valid for accounts.
     -G <group>..., --groups <group>...      Groups to which to add a resource. Valid for accounts.
     -R, --create-directory                  When creating an application create the directory. Valid for applications.
+    --href <href>                           When referencing already created Resources (ie. for update)
 
 
 Specific search options are only available for resources that have matching
@@ -69,12 +70,12 @@ from stormpath.client import Client
 from stormpath.error import Error as StormpathError
 
 from stormpath_cli.actions import AVAILABLE_ACTIONS, LOCAL_ACTIONS, \
-    DEFAULT_ACTION, SET_ACTION
+    DEFAULT_ACTION
 from stormpath_cli.auth import init_auth
 from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
-from stormpath_cli.util import strip_equal_sign
+from stormpath_cli.util import find_non_dash_arguments_and_default_action, check_primary_identifier_without_flags
 
 from . import __version__ as version
 
@@ -93,23 +94,10 @@ def main():
     log = setup_output(arguments.get('--verbose'))
 
     arguments.update(get_context_dict())
-    arguments = strip_equal_sign(arguments)
 
-    if resource and resource.find('=') != -1:
-        # Workaround for when list command is not specified
-        # and non-dash attributes are used
-        arguments['<attributes>'].append(resource)
-        arguments['<resource>'] = None
-        resource = None
+    arguments, resource, action = find_non_dash_arguments_and_default_action(arguments, resource, action)
 
-    if action in AVAILABLE_RESOURCES and not resource:
-        resource = action
-        action = DEFAULT_ACTION
-
-    if action == SET_ACTION:
-        for i, atr in enumerate(arguments.get('<attributes>')):
-            if atr.startswith(Client.BASE_URL):
-                arguments['<attributes>'][i] = 'href=' + atr
+    arguments = check_primary_identifier_without_flags(arguments, resource, action)
 
     if not action:
         log.error(__doc__.strip('\n'))
