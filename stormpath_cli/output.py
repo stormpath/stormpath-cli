@@ -15,7 +15,7 @@ def _remove_links(data):
     d2 = deepcopy(data)
     for i, el in enumerate(data):
         for k, v in el.items():
-            if isinstance(v, dict):
+            if isinstance(v, dict) or k == 'defaultAccountStoreMapping' or k == 'defaultGroupStoreMapping':
                 del d2[i][k]
     return d2
 
