@@ -255,6 +255,6 @@ AVAILABLE_ACTIONS = {
     'unset': delete_context,
 }
 
-LOCAL_ACTIONS = ('setup', 'context', 'unset')
+LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'

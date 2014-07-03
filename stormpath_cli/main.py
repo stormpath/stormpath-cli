@@ -103,6 +103,10 @@ def main():
         log.error(__doc__.strip('\n'))
         return -1
 
+    if action == 'help':
+        log.error(__doc__.strip('\n'))
+        return -1
+
     if action not in AVAILABLE_ACTIONS:
         log.error("Unknown action '%s'. See 'stormpath --help' for list of "
             "available actions." % action)
