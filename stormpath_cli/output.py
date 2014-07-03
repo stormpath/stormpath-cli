@@ -3,6 +3,7 @@ from copy import deepcopy
 from itertools import repeat
 import json
 import six
+import sys
 from sys import stdout
 import logging
 
@@ -142,15 +143,25 @@ def setup_output(verbose):
     logging.getLogger("requests").propagate = False
     return get_logger()
 
-def prompt(arg, msg):
+
+def _prompt_password(msg):
     from getpass import getpass
+    res = getpass(prompt="Enter new password for " + msg + "*: ")
+    res2 = getpass(prompt="Confirm new password for " + msg + "*: ")
+    if res != res2:
+        print('ERROR: Given passwords do not match!')
+        sys.exit(1)
+    return res
+
+
+def prompt(arg, msg):
     try:
         input = raw_input
     except NameError:
         pass
 
     if arg == 'password':
-        res = getpass(prompt=msg + ": ")
+        res = _prompt_password(msg)
     else:
         res = input(msg + ": ")
     return res

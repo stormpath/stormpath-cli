@@ -99,8 +99,12 @@ def _prompt_if_missing_parameters(coll, args, only_primary=False):
     get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
     get_logger().info('Fields without an asterisk are optional.')
     for arg in sorted(remaining_coll_args):
-        required = '*' if arg in required_coll_args.keys() else ''
-        v = prompt(arg, '%s%s' % (arg.replace('_', ' ').capitalize(), required))
+        if arg == 'password':
+            msg = args['--email']
+        else:
+            required = '*' if arg in required_coll_args.keys() else ''
+            msg = '%s%s' % (arg.replace('_', ' ').capitalize(), required)
+        v = prompt(arg, msg)
         args[all_coll_args[arg]] = v
     if type(coll) in EXTRA_MAPS:
         v = prompt(None, 'Create a directory for this application?[Y/n]')
