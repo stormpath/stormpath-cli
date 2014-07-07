@@ -8,7 +8,7 @@ from stormpath.resources.group import GroupList
 
 from .auth import setup_credentials
 from .context import set_context, show_context, delete_context
-from .output import get_logger, output
+from .output import get_logger, output, prompt
 from .resources import get_resource, get_resource_data
 
 
@@ -21,20 +21,44 @@ ATTRIBUTE_MAPS = {
         surname = '--surname',
         password = '--password',
         status = '--status',
+        href = '--href',
     ),
     ApplicationList: dict(
         name = '--name',
         description = '--description',
+        href = '--href',
     ),
     DirectoryList: dict(
         name = '--name',
         description = '--description',
+        href = '--href',
     ),
     GroupList: dict(
         name = '--name',
         description = '--description',
+        href = '--href',
     ),
 }
+
+
+REQUIRED_ATTRIBUTES = {
+    AccountList: dict(
+        email = '--email',
+        given_name = '--given-name',
+        surname = '--surname',
+        password = '--password',
+    ),
+    ApplicationList: dict(
+        name = '--name',
+    ),
+    DirectoryList: dict(
+        name = '--name',
+    ),
+    GroupList: dict(
+        name = '--name',
+    ),
+}
+
 
 EXTRA_MAPS = {
     ApplicationList: dict(
@@ -49,11 +73,43 @@ for k, v in ATTRIBUTE_MAPS.items():
     SEARCH_ATTRIBUTE_MAPS[k] = v
 
 RESOURCE_PRIMARY_ATTRIBUTES = {
-    AccountList: 'email',
-    ApplicationList: 'name',
-    DirectoryList: 'name',
-    GroupList: 'name',
+    AccountList: ['email', 'href'],
+    ApplicationList: ['name', 'href'],
+    DirectoryList: ['name', 'href'],
+    GroupList: ['name', 'href'],
 }
+
+
+def _prompt_if_missing_parameters(coll, args, only_primary=False):
+    required_coll_args = REQUIRED_ATTRIBUTES[type(coll)]
+    all_coll_args = ATTRIBUTE_MAPS[type(coll)]
+    if 'href' in all_coll_args:
+        all_coll_args.pop('href')
+    supplied_required_arguments = []
+    for arg in required_coll_args.values():
+        if arg in args and args[arg]:
+            supplied_required_arguments.append(arg)
+
+    if len(supplied_required_arguments) == required_coll_args.values():
+        return args
+
+    remaining_coll_args = {k:v for k,v in all_coll_args.items()
+            if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
+
+    get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
+    get_logger().info('Fields without an asterisk are optional.')
+    for arg in sorted(remaining_coll_args):
+        if arg == 'password':
+            msg = args['--email']
+        else:
+            required = '*' if arg in required_coll_args.keys() else ''
+            msg = '%s%s' % (arg.replace('_', ' ').capitalize(), required)
+        v = prompt(arg, msg)
+        args[all_coll_args[arg]] = v
+    if type(coll) in EXTRA_MAPS:
+        v = prompt(None, 'Create a directory for this application?[Y/n]')
+        args['--create-directory'] = v != 'n'
+    return args
 
 
 def _specialized_query(coll, args, maps):
@@ -64,7 +120,7 @@ def _specialized_query(coll, args, maps):
         try:
             return json.loads(json_rep)
         except ValueError as e:
-            raise ValueError("Error parsing JSON: {}".format(e))
+            raise ValueError("Error parsing JSON: %s" % e)
     ctype = type(coll)
     pmap = maps.get(ctype, {})
     params = {}
@@ -77,12 +133,14 @@ def _specialized_query(coll, args, maps):
 
 def _primary_attribute(coll, attrs):
     """Checks to see if the required primary attributes ie. identifiers like
-    -n or --name are present."""
-    attr_name = RESOURCE_PRIMARY_ATTRIBUTES[type(coll)]
-    attr_value = attrs.get(attr_name)
-    if not attr_value:
-        raise ValueError("Required attribute '%s' not specified." % attr_name)
-    return attr_name, attr_value
+    -n or --name are present. Each Resource can have 2 primary attributes name/email
+    and the special attribute href"""
+    attr_names = RESOURCE_PRIMARY_ATTRIBUTES[type(coll)]
+
+    attr_values = [attrs.get(n) for n in attr_names if attrs.get(n)]
+    if not any(attr_values):
+        raise ValueError("Required attribute '%s' not specified." % ' or '.join(attr_names))
+    return attr_names[0], attr_values[0]
 
 
 def _gather_resource_attributes(coll, args):
@@ -125,6 +183,7 @@ def list_resources(coll, args):
 def create_resource(coll, args):
     """Create action: Creates a Resource."""
     args = _gather_resource_attributes(coll, args)
+    _prompt_if_missing_parameters(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     extra = _specialized_query(coll, args, EXTRA_MAPS)
@@ -145,7 +204,7 @@ def update_resource(coll, args):
     resource = get_resource(coll, attr_name, attr_value)
 
     for name, value in attrs.items():
-        if name == attr_name:
+        if name == attr_name or name == 'href':
             continue
         setattr(resource, name, value)
     resource.save()
@@ -165,10 +224,15 @@ def delete_resource(coll, args):
     data = get_resource_data(resource)
     force = args.get('--force', False)
 
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
     if not force:
         print("Are you sure you want to delete the following resource?")
         print(json.dumps(data, indent=2, sort_keys=True))
-        resp = raw_input('Delete this resource [y/N]? ')
+        resp = input('Delete this resource [y/N]? ')
         if resp.upper() != 'Y':
             return
     else:
@@ -191,5 +255,6 @@ AVAILABLE_ACTIONS = {
     'unset': delete_context,
 }
 
-LOCAL_ACTIONS = ('setup', 'context', 'unset')
+LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
 DEFAULT_ACTION = 'list'
+SET_ACTION = 'set'

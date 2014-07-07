@@ -48,3 +48,39 @@ def strip_equal_sign(arguments):
             arguments.update({k: v.lstrip('=')})
             v.lstrip('=')
     return arguments
+
+def find_non_dash_arguments_and_default_action(arguments, resource, action):
+    """Sets the default action to list if no action is supplied.
+    Finds all param=value pairs (ie. without dashes)"""
+    from .actions import DEFAULT_ACTION
+    from .resources import AVAILABLE_RESOURCES
+
+    arguments = strip_equal_sign(arguments)
+    if resource and resource.find('=') != -1:
+        # Workaround for when list command is not specified
+        # and non-dash attributes are used
+        arguments['<attributes>'].append(resource)
+        arguments['<resource>'] = None
+        resource = None
+
+    if action in AVAILABLE_RESOURCES and not resource:
+        resource = action
+        action = DEFAULT_ACTION
+
+    return arguments, resource, action
+
+def check_primary_identifier_without_flags(arguments, resource, action):
+    """See if the primary attribute (ie. name/email) is supplied without
+    the -n/--name flags (ie. stormpath create application 'MyApplication')
+    and collect them in the <attributes> dict formated as name=value pairs."""
+    from stormpath.client import Client
+
+    for i, attr in enumerate(arguments.get('<attributes>')):
+        if attr.find("=") == -1:
+            if attr.startswith(Client.BASE_URL):
+                arguments['<attributes>'][i] = 'href=' + attr
+            else:
+                primary_attr = 'email' if resource.find('account') != -1 else 'name'
+                arguments['<attributes>'][i] = primary_attr + "=" + attr
+    return arguments
+

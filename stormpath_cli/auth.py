@@ -90,7 +90,12 @@ def _ask_for_credentials():
         "#get-an-api-key for more information)")
 
     try:
-        key_id = raw_input("API Key ID: ")
+        input = raw_input
+    except NameError:
+        pass
+
+    try:
+        key_id = input("API Key ID: ")
         if not key_id:
             return None
         key_secret = getpass("API Key Secret: ")
