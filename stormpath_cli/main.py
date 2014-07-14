@@ -76,6 +76,7 @@ from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
 from stormpath_cli.util import find_non_dash_arguments_and_default_action, check_primary_identifier_without_flags
+from stormpath_cli.actions import SET_ACTION
 
 from . import __version__ as version
 
@@ -116,6 +117,10 @@ def main():
         return 0 if AVAILABLE_ACTIONS[action](arguments) else -1
 
     if not resource:
+        if action == SET_ACTION:
+            log.error("A resource type is required. Available resources for the set command are: "
+                    "application, directory. Please see 'stormpath --help'")
+            return -1
         log.error("A resource type is required. Available resources: %s. "
             "Please see 'stormpath --help'" % ", ".join(sorted(AVAILABLE_RESOURCES.keys())))
         return -1
