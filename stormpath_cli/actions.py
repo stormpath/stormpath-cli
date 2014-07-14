@@ -8,6 +8,7 @@ from stormpath.resources.group import GroupList
 
 from .auth import setup_credentials
 from .context import set_context, show_context, delete_context
+from .status import show_status
 from .output import get_logger, output, prompt
 from .resources import get_resource, get_resource_data
 
@@ -253,8 +254,11 @@ AVAILABLE_ACTIONS = {
     'context': show_context,
     'setup': setup_credentials,
     'unset': delete_context,
+    'status': show_status,
 }
 
 LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
+STATUS_ACTION = 'status'
+

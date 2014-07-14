@@ -13,6 +13,7 @@ Actions:
     context  Show currently used context for user/group actions
     setup    Set up credentials for accessing the Stormpath API
     unset    Deletes the current context
+    status   Prints out authentication info and context
 
 Resources:
     application  Application Resource
@@ -76,7 +77,7 @@ from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
 from stormpath_cli.util import find_non_dash_arguments_and_default_action, check_primary_identifier_without_flags
-from stormpath_cli.actions import SET_ACTION
+from stormpath_cli.actions import SET_ACTION, STATUS_ACTION
 
 from . import __version__ as version
 
@@ -116,7 +117,7 @@ def main():
     if action in LOCAL_ACTIONS:
         return 0 if AVAILABLE_ACTIONS[action](arguments) else -1
 
-    if not resource:
+    if not resource and action != STATUS_ACTION:
         if action == SET_ACTION:
             log.error("A resource type is required. Available resources for the set command are: "
                     "application, directory. Please see 'stormpath --help'")
@@ -125,7 +126,7 @@ def main():
             "Please see 'stormpath --help'" % ", ".join(sorted(AVAILABLE_RESOURCES.keys())))
         return -1
 
-    if resource not in AVAILABLE_RESOURCES:
+    if resource not in AVAILABLE_RESOURCES and action != STATUS_ACTION:
         log.error("Unknown resource type '%s'. See 'stormpath --help' for "
             "list of available resource types." % resource)
         return -1
@@ -136,6 +137,9 @@ def main():
     except ValueError as ex:
         log.error(str(ex))
         return -1
+
+    if action == STATUS_ACTION:
+        return 0 if AVAILABLE_ACTIONS[action](client, arguments) else -1
 
     try:
         res = AVAILABLE_RESOURCES[resource](client, arguments)
