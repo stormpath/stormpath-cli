@@ -61,7 +61,11 @@ def _output_to_tty_human_readable(data, out=stdout):
     """The default output function, used for printing a nicely aligned
     human readable output"""
     for item in data:
-        ordered_data = _sort(item)
+        if not isinstance(item, collections.OrderedDict):
+            ordered_data = _sort(item)
+        else:
+            # already ordered in a custom way
+            ordered_data = item
         max_indent = max(map(len, ordered_data.keys()))
         for key in ordered_data.keys():
             msg = _format_row(ordered_data, key, max_indent)

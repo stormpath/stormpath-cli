@@ -86,3 +86,4 @@ def delete_context(args):
 
 def show_context(args):
     _display_context()
+
