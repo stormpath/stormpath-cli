@@ -12,7 +12,7 @@ A command-line client for the Stormpath REST API (https://stormpath.com).
 #### Get an API Key
 
 First things first, if you haven't already go and sign up for a Stormpath account [here](https://api.stormpath.com/register).
-All requests to the Stormpath REST API must be authenticated with an API Key. To get an API key: 
+All requests to the Stormpath REST API must be authenticated with an API Key. To get an API key:
 
   * Log in to the [Stormpath Admin Console](https://api.stormpath.com/login) using the email address and password you used to register with Stormpath.
   * In the top-right corner of the resulting page, visit Settings > My Account.
@@ -29,7 +29,7 @@ This will generate your API Key and download it to your computer as an apiKey.pr
 
     chmod go-rwx $HOME/.stormpath/apiKey.properties
 
-It might be useful to fist familiarize yourself with the [Stormpath REST API](http://docs.stormpath.com/rest/product-guide/) and the naming used there in. 
+It might be useful to fist familiarize yourself with the [Stormpath REST API](http://docs.stormpath.com/rest/product-guide/) and the naming used there in.
 
 
 #### Setting up the CLI
@@ -110,7 +110,7 @@ If no action is specified the CLI defaults to a `list` actions. So the following
 Which results in the following output:
 
     description: dinamo
-    href:        https://api.stormpath.com/v1/applications/4tlsArn68oWmwungvwo8PQ 
+    href:        https://api.stormpath.com/v1/applications/4tlsArn68oWmwungvwo8PQ
     name:        My Application
     status:      ENABLED
 
@@ -129,7 +129,7 @@ The cli tool supports outputting JSON as well, so if you wish to get the above o
 Piping is supported as well, so a `stormpath list application | less` will result in a tab separated output.
 
 #### Creating an Application
-    
+
 To create an application issue the following command:
 
     stormpath create application -n "My Application" -d "My App created with CLI"
@@ -146,12 +146,12 @@ Test to see if the app and directory got created:
 
 Depending on what resource you're referencing there are required and optional flags:
 
-For applications, directories, groups: 
-    
+For applications, directories, groups:
+
     -n, --name              required, the name of the resource
     -d, --description       optional, the description of the resource
     -R, --create-directory  optional, auto create directory
-    
+
 For accounts:
 
     -e, --email             required, the email property of the account
@@ -161,7 +161,7 @@ For accounts:
     -u, --username          optional, the username property
     -m, --middle-name       optional, the middleName property
     -f, --full-name         optional, the full name property
-    
+
 For Accounts and Groups:
 
     -A, --in-application
@@ -179,11 +179,11 @@ we wish to update:
 Update commands require an identifier that identifies the resource:
 
 For Applications, Directories, Groups:
-    
+
     -n, --name  required, identifier name
-    
+
 For Accounts:
-    
+
     -e, --email required, account email
 
 
@@ -192,11 +192,11 @@ For Accounts:
 To delete a resource, a resource must be identified:
 
 For Applications, Directories, Groups:
-    
+
     -n, --name  required, identifier name
-    
+
 For Accounts:
-    
+
     -e, --email required, account email
 
 For example to delete an Application:
@@ -228,7 +228,7 @@ Since Accounts and Groups are tied to Applications and Directories when creating
     stormpath create group "My Group" --in-application "My Application"
 
 Or we can use the JSON representation:
-    
+
     stormpath create account --json '{"username": "myuser", "email": "myuser@email.com", "password": "SomePassword12"}' --in-application "My Application"
 
 To avoid having to use the `--in-application` or `--in-directory` flags over and over you can set the context for all of the Accounts/Groups commands using the `set` command like so:
@@ -266,6 +266,28 @@ And:
     stormpath create account -e user@email.com --username=dvader --given-name=Anakin --surname=Skywalker
 
 Both wil result in the same thing. Identifier flags such as `-e` still require the the dash.
+
+#### Creating Account Store Mappings
+
+When creating an application it's possible to create the default account store using the `-R` or `--create-directory` flag. However one might wish to
+be able to add additional groups or directories to an application.
+
+First set the context to the desired application using the set command:
+
+    stormpath set application -n "MyApplication"
+
+Then when the context is set (note: you can check the current context using the `stormpath context` command) it's possible to create
+a new account store mapping like so:
+
+    stormpath create mapping "href_to_desired_directory_or_group" --is-default-account-store true
+
+To list the mappings for the current application use the command below:
+
+    stormpath list mappings
+
+To update an account store mapping use the update command:
+
+    stormpath update mapping "href_for_desired_mapping" --is-default-group-store true
 
 
 # Copyright & Licensing
