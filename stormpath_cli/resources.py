@@ -52,6 +52,10 @@ def get_groups(client, args):
     """Gets all groups from the current context"""
     return _get_context(client, args).groups
 
+def get_mappings(client, args):
+    """Gets all accounts store mappings for the set application"""
+    return _get_context(client, args).account_store_mappings
+
 
 AVAILABLE_RESOURCES = {
     'application': lambda c, args: c.applications,
@@ -62,4 +66,6 @@ AVAILABLE_RESOURCES = {
     'accounts': get_accounts,
     'group': get_groups,
     'groups': get_groups,
+    'mapping': get_mappings,
+    'mappings': get_mappings,
 }

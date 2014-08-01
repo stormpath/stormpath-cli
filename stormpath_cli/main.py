@@ -20,6 +20,7 @@ Resources:
     directory    Directory Resource
     group        Group Resource
     account      Account Resource
+    mapping      Account Store Mapping
 
 Options:
     -h, --help                              Lists help
@@ -28,6 +29,8 @@ Options:
     -a <key:secret>, --apikey <key:secret>  Authenticate with provided key and secret
     -k <file>, --apikeyfile <file>          Use credentials from <file>
     -L, --show-links                        Show links to related resources
+    --is-default-account-store <bool>       Used for adding mappings to current application.
+    --is-default-group-store <bool>         Used for adding mappings to current application.
 
 List/search/create options:
     -n <name>, --name <name>                Resource name. Valid for applications, directories, groups.
@@ -43,7 +46,6 @@ List/search/create options:
     -G <group>..., --groups <group>...      Groups to which to add a resource. Valid for accounts.
     -R, --create-directory                  When creating an application create the directory. Valid for applications.
     --href <href>                           When referencing already created Resources (ie. for update)
-
 
 Specific search options are only available for resources that have matching
 attributes. Option '--query' matches on substrings, but all of the other search
@@ -76,7 +78,8 @@ from stormpath_cli.auth import init_auth
 from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES
 from stormpath_cli.output import output, setup_output
-from stormpath_cli.util import find_non_dash_arguments_and_default_action, check_primary_identifier_without_flags
+from stormpath_cli.util import (find_non_dash_arguments_and_default_action,
+    check_primary_identifier_without_flags, properly_support_boolean_values)
 from stormpath_cli.actions import SET_ACTION, STATUS_ACTION
 
 from . import __version__ as version
@@ -98,6 +101,8 @@ def main():
     arguments.update(get_context_dict())
 
     arguments, resource, action = find_non_dash_arguments_and_default_action(arguments, resource, action)
+
+    arguments = properly_support_boolean_values(arguments)
 
     arguments = check_primary_identifier_without_flags(arguments, resource, action)
 

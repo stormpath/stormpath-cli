@@ -3,6 +3,7 @@ import json
 
 from stormpath.resources.account import AccountList, Account
 from stormpath.resources.application import ApplicationList
+from stormpath.resources.account_store_mapping import AccountStoreMappingList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
 
@@ -28,6 +29,13 @@ ATTRIBUTE_MAPS = {
         name = '--name',
         description = '--description',
         href = '--href',
+    ),
+    AccountStoreMappingList: dict(
+        href = '--href',
+        account_store = '--href',
+        application = '--in-application',
+        is_default_account_store = '--is-default-account-store',
+        is_default_group_store = '--is-default-group-store',
     ),
     DirectoryList: dict(
         name = '--name',
@@ -58,6 +66,10 @@ REQUIRED_ATTRIBUTES = {
     GroupList: dict(
         name = '--name',
     ),
+    AccountStoreMappingList: dict(
+        application = '--in-application',
+        account_store = '--href',
+    )
 }
 
 
@@ -78,6 +90,7 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
     ApplicationList: ['name', 'href'],
     DirectoryList: ['name', 'href'],
     GroupList: ['name', 'href'],
+    AccountStoreMappingList: ['account_store', 'href'],
 }
 
 
@@ -96,20 +109,20 @@ def _prompt_if_missing_parameters(coll, args, only_primary=False):
 
     remaining_coll_args = {k:v for k,v in all_coll_args.items()
             if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
-
-    get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
-    get_logger().info('Fields without an asterisk are optional.')
-    for arg in sorted(remaining_coll_args):
-        if arg == 'password':
-            msg = args['--email']
-        else:
-            required = '*' if arg in required_coll_args.keys() else ''
-            msg = '%s%s' % (arg.replace('_', ' ').capitalize(), required)
-        v = prompt(arg, msg)
-        args[all_coll_args[arg]] = v
-    if type(coll) in EXTRA_MAPS:
-        v = prompt(None, 'Create a directory for this application?[Y/n]')
-        args['--create-directory'] = v != 'n'
+    if remaining_coll_args:
+        get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
+        get_logger().info('Fields without an asterisk are optional.')
+        for arg in sorted(remaining_coll_args):
+            if arg == 'password':
+                msg = args['--email']
+            else:
+                required = '*' if arg in required_coll_args.keys() else ''
+                msg = '%s%s' % (arg.replace('_', ' ').capitalize(), required)
+            v = prompt(arg, msg)
+            args[all_coll_args[arg]] = v
+        if type(coll) in EXTRA_MAPS:
+            v = prompt(None, 'Create a directory for this application?[Y/n]')
+            args['--create-directory'] = v != 'n'
     return args
 
 
@@ -170,12 +183,23 @@ def _add_resource_to_groups(resource, args):
         return resource
 
 
+def _check_account_store_mapping(coll, attrs):
+    """Takes care of special create case for account store mappings"""
+
+    if isinstance(coll, AccountStoreMappingList):
+        attrs['application'] = {'href': attrs.get('application')}
+        attrs['account_store'] = {'href': attrs.get('account_store')}
+
+    return attrs
+
+
 def list_resources(coll, args):
     """List action: Lists the requested Resource collection."""
     args = _gather_resource_attributes(coll, args)
     q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
-    if q:
-        coll = coll.query(**q)
+    if not isinstance(coll, AccountStoreMappingList):
+        if q:
+            coll = coll.query(**q)
     output([get_resource_data(r) for r in coll],
         show_links = args.get('--show-links', False),
         output_json = args.get('--output-json'))
@@ -186,6 +210,7 @@ def create_resource(coll, args):
     args = _gather_resource_attributes(coll, args)
     _prompt_if_missing_parameters(coll, args)
     attrs = _specialized_query(coll, args, ATTRIBUTE_MAPS)
+    attrs = _check_account_store_mapping(coll, attrs)
     attr_name, attr_value = _primary_attribute(coll, attrs)
     extra = _specialized_query(coll, args, EXTRA_MAPS)
 

@@ -26,7 +26,7 @@ class TestAuth(unittest.TestCase):
 
     def test_setting_context(self):
         context.store_config_file = lambda x, y: True
-        context.get_resource = lambda x, y, z: True
+        context.get_resource = lambda x, y, z: MagicMock()
         coll = ApplicationList(MagicMock(), href="test/resource")
         args = {'--name': 'test'}
         try:
@@ -36,14 +36,14 @@ class TestAuth(unittest.TestCase):
 
     def test_setting_context_doesnt_allow_wildcard(self):
         context.store_config_file = lambda x, y: True
-        context.get_resource = lambda x, y, z: True
+        context.get_resource = lambda x, y, z: MagicMock()
         coll = ApplicationList(MagicMock(), href="test/resource")
         args = {'--name': 'test*'}
         self.assertRaises(ValueError, context.set_context, coll, args)
 
     def test_setting_context_only_works_for_application_and_directory_resources(self):
         context.store_config_file = lambda x, y: True
-        context.get_resource = lambda x, y, z: True
+        context.get_resource = lambda x, y, z: MagicMock()
         app = ApplicationList(MagicMock(), href="test/resource")
         d = DirectoryList(MagicMock(), href="test/resource")
         args = {'--name': 'test'}

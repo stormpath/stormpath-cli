@@ -84,3 +84,13 @@ def check_primary_identifier_without_flags(arguments, resource, action):
                 arguments['<attributes>'][i] = primary_attr + "=" + attr
     return arguments
 
+
+def properly_support_boolean_values(arguments):
+    def _txt_to_bool(val):
+        ret = 'true' if (val == 'true' or val == '1' or val == 'True') else 'false'
+        return ret
+
+    arguments['--is-default-account-store'] = _txt_to_bool(arguments.get('--is-default-account-store'))
+    arguments['--is-default-group-store'] = _txt_to_bool(arguments.get('--is-default-group-store'))
+    return arguments
+
