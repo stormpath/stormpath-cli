@@ -290,6 +290,22 @@ To update an account store mapping use the update command:
     stormpath update mapping "href_for_desired_mapping" --is-default-group-store true
 
 
+#### Status command
+
+Using the command `stormpath status` you get the following output:
+
+    API Key ID:           USED_API_KEY
+    API Key Secret:       USED_API_KEY_SECRET
+    Tenant:               tenant-name
+    Application context:  https://api.stormpath.com/v1/applications/appshref
+    Directory context:    null
+    Group context:        null
+    Communication Status: up
+
+The command list the current context and used API credentials as well as showing if the CLI tool
+is able to communicate with the Stormpath API.
+
+
 # Copyright & Licensing
 
 Copyright © 2012, 2013, 2014 Stormpath, Inc. and contributors.
