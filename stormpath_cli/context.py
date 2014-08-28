@@ -58,7 +58,7 @@ def set_context(collection, args):
         raise ValueError("Cannot use wildcard syntax when setting context.")
 
     # this verifies that the provided argument actually is a name
-    get_resource(collection, 'name', value)
+    res = get_resource(collection, 'name', value)
 
     if isinstance(collection, ApplicationList):
         flag = '--in-application'
@@ -68,7 +68,7 @@ def set_context(collection, args):
         raise ValueError("Context can only be set to Application or "
             "Directory resources")
 
-    f = store_config_file('context.properties', '%s = %s\n' % (flag, value))
+    f = store_config_file('context.properties', '%s = %s\n' % (flag, res.href))
     _display_context()
     return f
 
