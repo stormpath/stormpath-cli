@@ -162,9 +162,10 @@ def main():
         return -1
 
     if result is not None and (isinstance(result, list) or isinstance(result, dict)):
-        output(result,
-            show_links=arguments.get('--show-links', False),
-            show_headers=arguments.get('--show-headers', False))
+        output(
+            result, show_links=arguments.get('--show-links', False),
+            show_headers=arguments.get('--show-headers', False),
+            output_json=arguments.get('--output-json', False))
     return 0
 
 
