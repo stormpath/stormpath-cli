@@ -1,10 +1,19 @@
-from os import environ, makedirs, rename, chmod, unlink
-from os.path import join, dirname, exists
+import sys
+from os import chmod, environ, makedirs, rename, unlink
+from os.path import dirname, exists, join, splitdrive
+
+
+def get_root_path():
+    """Helper function for getting the root path."""
+    drive = splitdrive(sys.executable)[0]
+    if drive:
+        return '%s\\' % drive
+    return '/'
 
 
 def get_config_path(name):
     """Helper function for getting the cli config file path."""
-    sp_root_dir = join(environ.get('HOME', '/'), '.stormpath')
+    sp_root_dir = join(environ.get('HOME', get_root_path()), '.stormpath')
     return join(sp_root_dir, 'cli', name)
 
 
@@ -93,4 +102,3 @@ def properly_support_boolean_values(arguments):
     arguments['--is-default-account-store'] = _txt_to_bool(arguments.get('--is-default-account-store'))
     arguments['--is-default-group-store'] = _txt_to_bool(arguments.get('--is-default-group-store'))
     return arguments
-
