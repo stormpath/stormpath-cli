@@ -29,6 +29,7 @@ Options:
     -a <key:secret>, --apikey <key:secret>  Authenticate with provided key and secret
     -k <file>, --apikeyfile <file>          Use credentials from <file>
     -L, --show-links                        Show links to related resources
+    -H, --show-headers                      If in TSV mode, show column headers in the first line
     --is-default-account-store <bool>       Used for adding mappings to current application.
     --is-default-group-store <bool>         Used for adding mappings to current application.
 
@@ -161,8 +162,10 @@ def main():
         return -1
 
     if result is not None and (isinstance(result, list) or isinstance(result, dict)):
-        output(result,
-            show_links=arguments.get('--show-links', False))
+        output(
+            result, show_links=arguments.get('--show-links', False),
+            show_headers=arguments.get('--show-headers', False),
+            output_json=arguments.get('--output-json', False))
     return 0
 
 

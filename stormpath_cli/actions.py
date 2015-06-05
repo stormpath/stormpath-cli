@@ -10,7 +10,7 @@ from stormpath.resources.group import GroupList
 from .auth import setup_credentials
 from .context import set_context, show_context, delete_context
 from .status import show_status
-from .output import get_logger, output, prompt
+from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
 
 
@@ -200,9 +200,7 @@ def list_resources(coll, args):
     if not isinstance(coll, AccountStoreMappingList):
         if q:
             coll = coll.query(**q)
-    output([get_resource_data(r) for r in coll],
-        show_links = args.get('--show-links', False),
-        output_json = args.get('--output-json'))
+    return [get_resource_data(r) for r in coll]
 
 
 def create_resource(coll, args):
@@ -217,8 +215,8 @@ def create_resource(coll, args):
     resource = coll.create(attrs, **extra)
     _add_resource_to_groups(resource, args)
 
-    output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource created.')
+    return get_resource_data(resource)
 
 
 def update_resource(coll, args):
@@ -236,8 +234,8 @@ def update_resource(coll, args):
     resource.save()
     _add_resource_to_groups(resource, args)
 
-    output(get_resource_data(resource), output_json=args.get('--output-json'))
     get_logger().info('Resource updated.')
+    return get_resource_data(resource)
 
 
 def delete_resource(coll, args):
@@ -261,13 +259,13 @@ def delete_resource(coll, args):
         resp = input('Delete this resource [y/N]? ')
         if resp.upper() != 'Y':
             return
-    else:
-        # If we're running in a script, it's useful to log exactly which
-        # resource was deleted (update/create do the same)
-        output(data, output_json=args.get('--output-json'))
 
     resource.delete()
     get_logger().info("Resource deleted.")
+    if force:
+        # If we're running in a script, it's useful to log exactly which
+        # resource was deleted (update/create do the same)
+        return data
 
 
 AVAILABLE_ACTIONS = {

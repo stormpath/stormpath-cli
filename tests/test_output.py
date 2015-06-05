@@ -47,9 +47,21 @@ class TestOutput(unittest.TestCase):
         try:
             out = StringIO()
             sys.stdout = out
-            output._output_tsv(data=data, out=out)
+            output._output_tsv(data=data, show_headers=False, out=out)
             ret = out.getvalue().strip()
             self.assertEquals(ret, 'test_description\ttest')
+        finally:
+            sys.stdout = saved_stdout
+
+    def test_tsv_output_with_show_headers(self):
+        data = [{'href': 'test', 'description': 'test_description'}]
+        saved_stdout = sys.stdout
+        try:
+            out = StringIO()
+            sys.stdout = out
+            output._output_tsv(data=data, show_headers=True, out=out)
+            ret = out.getvalue().strip()
+            self.assertEquals(ret, 'description\thref\ntest_description\ttest')
         finally:
             sys.stdout = saved_stdout
 
