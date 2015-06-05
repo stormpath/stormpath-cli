@@ -66,17 +66,15 @@ def init_auth(args, quiet=True):
                 "authentication.")
         return dict(api_key_file_location=key_file)
 
-    if 'HOME' in environ:
-        key_file = get_config_path('apiKey.properties')
-        if not exists(key_file):
-            key_file = join(environ['HOME'], '.stormpath', 'apiKey.properties')
+    key_file = get_config_path('apiKey.properties')
+    if not exists(key_file) and 'HOME' in environ:
+        key_file = join(environ['HOME'], '.stormpath', 'apiKey.properties')
 
-        if exists(key_file):
-            key_file = realpath(key_file)
-            if not quiet:
-                log.info("Using API Key file %s for authentication." %
-                    key_file)
-            return dict(api_key_file_location=key_file)
+    if exists(key_file):
+        key_file = realpath(key_file)
+        if not quiet:
+            log.info("Using API Key file %s for authentication." % key_file)
+        return dict(api_key_file_location=key_file)
 
     raise ValueError("Unable to discover an existing API Key file path "
         "or API Key environment variable.")
