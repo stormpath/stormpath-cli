@@ -200,7 +200,8 @@ def list_resources(coll, args):
     if not isinstance(coll, AccountStoreMappingList):
         if q:
             coll = coll.query(**q)
-    return [get_resource_data(r) for r in coll]
+    for r in coll:
+        yield get_resource_data(r)
 
 
 def create_resource(coll, args):
