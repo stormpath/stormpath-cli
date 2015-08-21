@@ -7,9 +7,9 @@ except:
 import unittest
 
 try:
-    from mock import create_autospec, MagicMock
+    from mock import create_autospec, MagicMock, call
 except ImportError:
-    from unittest.mock import create_autospec, MagicMock
+    from unittest.mock import create_autospec, MagicMock, call
 
 from stormpath_cli import output
 
@@ -77,3 +77,34 @@ class TestOutput(unittest.TestCase):
             self.assertEquals(data, j)
         finally:
             sys.stdout = saved_stdout
+
+    def test_output_with_generator(self):
+        def generate_data():
+            for i in range(10):
+                yield {'href': 'test%s' % i}
+
+        data = generate_data()
+        output._output = MagicMock()
+
+        output.output(data)
+        self.assertEqual(output._output.call_count, 10)
+        calls = []
+        for i in range(10):
+            calls.append(call(
+                {'href': 'test%s' % i}, output_json=False,
+                show_headers=False, show_links=False))
+        output._output.assert_has_calls(calls)
+
+    def test_output_with_generator_and_output_json(self):
+        def generate_data():
+            for i in range(10):
+                yield {'href': 'test%s' % i}
+
+        data = generate_data()
+        output._output = MagicMock()
+
+        output.output(data, output_json=True)
+        self.assertEqual(output._output.call_count, 1)
+        output._output.assert_called_with(
+            list(generate_data()), output_json=True, show_headers=False,
+            show_links=False)

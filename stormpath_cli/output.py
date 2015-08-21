@@ -1,4 +1,5 @@
 import collections
+import types
 from copy import deepcopy
 from itertools import repeat
 import json
@@ -117,11 +118,9 @@ def _output_tsv(data, show_headers, out=stdout):
         out.write('\n')
 
 
-def output(data, show_links=False, show_headers=False, output_json=False):
-    """Main output function used for printing to stdout. It will invoke the correct
+def _output(data, show_links=False, show_headers=False, output_json=False):
+    """Output function used for printing to stdout. It will invoke the correct
     helper output function (ie. human readable/json/tsv)"""
-    if not isinstance(data, list):
-        data = [data]
     if not show_links:
         data = _remove_links(data)
     else:
@@ -132,10 +131,40 @@ def output(data, show_links=False, show_headers=False, output_json=False):
             _output_to_tty_json(data)
         else:
             _output_to_tty_human_readable(data)
-            stdout.write("\nTotal number of Resources returned: %s\n" %
-                len(data))
     else:
         _output_tsv(data, show_headers=show_headers)
+
+
+def output(data, show_links=False, show_headers=False, output_json=False):
+    """Main output function used for printing to stdout. It will
+    invoke helper output function using generator or list and output
+    total number of Resources if needed."""
+    # If we have generator and don't have to output JSON, we can
+    # loop throught it and output one resource at a time while
+    # keeping count of them, so we can output the total later
+    if isinstance(data, types.GeneratorType) and not output_json:
+        resources_count = 0
+        for d in data:
+            _output(
+                d, show_links=show_links, show_headers=show_headers,
+                output_json=output_json)
+            resources_count += 1
+    # For every other case, we are putting resources in a list (if
+    # they are not already) and outputting them all at once
+    else:
+        if isinstance(data, types.GeneratorType):
+            data = list(data)
+        elif not isinstance(data, list):
+            data = [data]
+
+        _output(
+            data, show_links=show_links, show_headers=show_headers,
+            output_json=output_json)
+        resources_count = len(data)
+
+    if stdout.isatty() and not output_json:
+        stdout.write(
+            "\nTotal number of Resources returned: %s\n" % resources_count)
 
 
 def get_logger():
