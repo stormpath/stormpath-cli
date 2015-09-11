@@ -126,11 +126,10 @@ def _output(data, show_links=False, show_headers=False, output_json=False):
     else:
         data = _show_links(data)
 
-    if stdout.isatty():
-        if output_json:
-            _output_to_tty_json(data)
-        else:
-            _output_to_tty_human_readable(data)
+    if output_json:
+        _output_to_tty_json(data)
+    elif stdout.isatty():
+        _output_to_tty_human_readable(data)
     else:
         _output_tsv(data, show_headers=show_headers)
 
