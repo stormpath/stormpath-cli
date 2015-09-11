@@ -108,3 +108,10 @@ class TestOutput(unittest.TestCase):
         output._output.assert_called_with(
             list(generate_data()), output_json=True, show_headers=False,
             show_links=False)
+
+    def test_json_output_when_not_a_tty(self):
+        data = [{'href': 'test', 'description': 'test_description'}]
+        output._output_to_tty_json = MagicMock()
+
+        output._output(data=data, output_json=True)
+        output._output_to_tty_json.assert_called_with(data)
