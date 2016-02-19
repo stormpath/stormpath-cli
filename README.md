@@ -4,7 +4,20 @@ A command-line client for the Stormpath REST API (https://stormpath.com).
 
 ### Install:
 
-    pip install stormpath-cli
+If you're using a Mac, you can install this CLI tool via
+[Homebrew](http://brew.sh/):
+
+```console
+brew install stormpath-cli
+```
+
+If you're using Linux, OSX, or Windows, and prefer to install the library via
+Python and [pip](http://pip.readthedocs.org/en/stable/), you can do so via:
+
+```console
+# NOTE: This may require `sudo` depending on your Python setup.
+pip install stormpath-cli
+```
 
 ### Usage:
 
