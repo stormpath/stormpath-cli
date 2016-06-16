@@ -1,6 +1,13 @@
 from __future__ import print_function
 import json
+from getpass import getpass
+from os import environ
+from os.path import join
+from sys import exit
+from time import sleep
 
+from pyquery import PyQuery as pq
+from requests import Session, get, post
 from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
@@ -12,6 +19,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
+from .util import get_root_path
 
 
 ATTRIBUTE_MAPS = {
@@ -268,6 +276,112 @@ def delete_resource(coll, args):
         return data
 
 
+def register(args):
+    """Register for Stormpath."""
+    data = {}
+    key_file = join(environ.get('HOME'), get_root_path(), '.stormpath', 'apiKey.properties')
+    done = False
+
+    rresp = get('https://api.stormpath.com/register', headers={'accept': 'application/json'})
+    rcookies = rresp.cookies
+    data['hpvalue'] = rresp.json()['hpvalue']
+    data['csrfToken'] = rresp.json()['csrfToken']
+
+    login_session = Session()
+    lresp = login_session.get('https://api.stormpath.com/login')
+
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
+    # Register the user on Stormpath.
+    while not done:
+        print('To register for Stormpath, please enter your information below.\n')
+        data['givenName'] = input('First Name: ')
+        data['surname'] = input('Last Name: ')
+        data['companyName'] = input('Company Name: ')
+        data['email'] = input('Email: ')
+        data['password'] = getpass('Password: ')
+        data['confirmedPassword'] = getpass('Confirm Password: ')
+
+        resp = post('https://api.stormpath.com/register', cookies=rcookies, json=data)
+
+        if resp.status_code == 204:
+            input('\nSuccessfully created your new Stormpath account! Please open your email inbox and click the account verification link.  Then come back to this window and press enter.')
+            done = True
+        elif resp.status_code == 409:
+            print('\nThat email address is already in-use. Please try again.')
+        else:
+            print('\nOops! Registration failed. Please try again.')
+            print(resp.text)
+
+    # Collect the user's tenant name.
+    done = False
+    while not done:
+        tenant = input('Please enter your Stormpath Tenant name (it can be found on the login page in your browser): ')
+        answer = input('Your Tenant name is: {}, is this correct? [y\\n]: '.format(tenant))
+
+        if 'y' in answer:
+            done = True
+
+    # Log the user in.
+    done = False
+    while not done:
+        resp = login_session.post('https://api.stormpath.com/login', data={
+            'tenantNameKey': tenant,
+            'email': data['email'],
+            'password': data['password'],
+            'csrfToken': pq(lresp.text)('input[name="csrfToken"]').val(),
+            'hpvalue': pq(lresp.text)('input[name="hpvalue"]').val(),
+        })
+        if resp.status_code == 200:
+            done = True
+        else:
+            print('Could not log you in, something bad happened. Please try again.')
+            exit(1)
+
+        resp = login_session.get('https://api.stormpath.com/ui2/views/dashboard.html')
+
+    # Create a new API key pair for this tenant, and download it.
+    done = False
+    while not done:
+        resp = login_session.get('https://api.stormpath.com/v1/accounts/current', headers={'accept': 'application/json'})
+        if resp.status_code != 200:
+            print('Retrying Account request...')
+            sleep(1)
+            continue
+
+        account_url = resp.json()['href']
+
+        resp = login_session.post(account_url + '/apiKeys', headers={'accept': 'application/json'}, json={'nocache': True})
+        if resp.status_code != 201:
+            print('Retrying API key creation...')
+            sleep(1)
+            continue
+
+        api_key_url = resp.headers['Location']
+
+        resp = login_session.get(api_key_url, headers={'accept': 'application/json'})
+        if resp.status_code != 200:
+            print('Retrying API key fetching...')
+            sleep(1)
+            continue
+
+        key = {
+            'id': resp.json()['id'],
+            'secret': resp.json()['secret'],
+        }
+
+        key_file = join(environ.get('HOME', get_root_path()), '.stormpath', 'apiKey.properties')
+        with open(key_file, 'wb') as f:
+            f.write('apiKey.id = {}\n'.format(key['id']))
+            f.write('apiKey.secret = {}\n'.format(key['secret']))
+            print('Successfully created API key for Stormpath usage. Saved as: {}'.format(key_file))
+
+        done = True
+
+
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
@@ -278,9 +392,10 @@ AVAILABLE_ACTIONS = {
     'setup': setup_credentials,
     'unset': delete_context,
     'status': show_status,
+    'register': register,
 }
 
-LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
+LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
 STATUS_ACTION = 'status'
