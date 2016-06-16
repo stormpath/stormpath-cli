@@ -20,7 +20,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
-from .util import get_root_path, store_config_file
+from .util import store_config_file
 
 
 ATTRIBUTE_MAPS = {
