@@ -13,6 +13,7 @@ from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
+from termcolor import colored
 
 from .auth import setup_credentials
 from .context import set_context, show_context, delete_context
@@ -279,15 +280,6 @@ def delete_resource(coll, args):
 def register(args):
     """Register for Stormpath."""
     data = {}
-    done = False
-
-    rresp = get('https://api.stormpath.com/register', headers={'accept': 'application/json'})
-    rcookies = rresp.cookies
-    data['hpvalue'] = rresp.json()['hpvalue']
-    data['csrfToken'] = rresp.json()['csrfToken']
-
-    login_session = Session()
-    lresp = login_session.get('https://api.stormpath.com/login')
 
     try:
         input = raw_input
@@ -295,31 +287,36 @@ def register(args):
         pass
 
     # Register the user on Stormpath.
+    done = False
     while not done:
-        print('To register for Stormpath, please enter your information below.\n')
-        data['givenName'] = input('First Name: ')
-        data['surname'] = input('Last Name: ')
-        data['companyName'] = input('Company Name: ')
-        data['email'] = input('Email: ')
-        data['password'] = getpass('Password: ')
-        data['confirmedPassword'] = getpass('Confirm Password: ')
+        session = Session()
+        resp = session.get('https://api.stormpath.com/register', headers={'accept': 'application/json'})
 
-        resp = post('https://api.stormpath.com/register', cookies=rcookies, json=data)
+        data['hpvalue'] = resp.json()['hpvalue']
+        data['csrfToken'] = resp.json()['csrfToken']
+
+        print('To register for Stormpath, please enter your information below.\n')
+        data['givenName'] = input(colored('First Name: ', 'green'))
+        data['surname'] = input(colored('Last Name: ', 'green'))
+        data['companyName'] = input(colored('Company Name: ', 'green'))
+        data['email'] = input(colored('Email: ', 'green'))
+        data['password'] = getpass(colored('Password: ', 'green'))
+        data['confirmedPassword'] = getpass(colored('Confirm Password: ', 'green'))
+
+        resp = session.post('https://api.stormpath.com/register', json=data)
 
         if resp.status_code == 204:
-            input('\nSuccessfully created your new Stormpath account! Please open your email inbox and click the account verification link.  Then come back to this window and press enter.')
+            input(colored('\nSuccessfully created your new Stormpath account!  Please open your email inbox and click the account verification link.  Then come back to this window and press enter.', 'yellow'))
             done = True
-        elif resp.status_code == 409:
-            print('\nThat email address is already in-use. Please try again.')
         else:
-            print('\nOops! Registration failed. Please try again.')
-            print(resp.text)
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            print('Please try again.')
 
     # Collect the user's tenant name.
     done = False
     while not done:
-        tenant = input('Please enter your Stormpath Tenant name (it can be found on the login page in your browser): ')
-        answer = input('Your Tenant name is: {}, is this correct? [y\\n]: '.format(tenant))
+        tenant = input(colored('\nPlease enter your Stormpath Tenant name (it can be found on the login page in your browser): ', 'green'))
+        answer = input(colored('Your Tenant name is: {}, is this correct?  [y\\n]: '.format(tenant), 'green'))
 
         if 'y' in answer:
             done = True
@@ -327,26 +324,35 @@ def register(args):
     # Log the user in.
     done = False
     while not done:
+        login_session = Session()
+        resp = login_session.get('https://api.stormpath.com/login')
+
+        parser = pq(resp.text)
+        csrf_token = parser('input[name="csrfToken"]').val()
+        hpvalue = parser('input[name="hpvalue"]').val()
+
+        sleep(3)
+
         resp = login_session.post('https://api.stormpath.com/login', data={
             'tenantNameKey': tenant,
             'email': data['email'],
             'password': data['password'],
-            'csrfToken': pq(lresp.text)('input[name="csrfToken"]').val(),
-            'hpvalue': pq(lresp.text)('input[name="hpvalue"]').val(),
+            'csrfToken': csrf_token,
+            'hpvalue': hpvalue,
         })
-        if resp.status_code == 200:
-            done = True
-        else:
-            print('Could not log you in, something bad happened. Please try again.')
+
+        if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             exit(1)
 
-        resp = login_session.get('https://api.stormpath.com/ui2/views/dashboard.html')
+        done = True
 
     # Create a new API key pair for this tenant, and download it.
     done = False
     while not done:
         resp = login_session.get('https://api.stormpath.com/v1/accounts/current', headers={'accept': 'application/json'})
         if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying Account request...')
             sleep(1)
             continue
@@ -355,6 +361,7 @@ def register(args):
 
         resp = login_session.post(account_url + '/apiKeys', headers={'accept': 'application/json'}, json={'nocache': True})
         if resp.status_code != 201:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying API key creation...')
             sleep(1)
             continue
@@ -363,17 +370,17 @@ def register(args):
 
         resp = login_session.get(api_key_url, headers={'accept': 'application/json'})
         if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying API key fetching...')
             sleep(1)
             continue
 
-        key = {
-            'id': resp.json()['id'],
-            'secret': resp.json()['secret'],
-        }
+        id = resp.json()['id']
+        secret = resp.json()['secret']
 
-        store_config_file('apiKey.properties', 'apiKey.id = {}\napiKey.secret = {}\n'.format(key['id'], key['secret']))
-        print('Successfully created API key for Stormpath usage. Saved as: ~/.stormpath/apiKey.properties')
+        store_config_file('apiKey.properties', 'apiKey.id = {}\napiKey.secret = {}\n'.format(id, secret))
+        print(colored('\nSuccessfully created API key for Stormpath usage. Saved as: ~/.stormpath/apiKey.properties', 'yellow'))
+        print(colored('You are now setup and ready to use Stormpath!', 'yellow'))
 
         done = True
 
