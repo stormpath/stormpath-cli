@@ -12,6 +12,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
+from projects import *
 
 
 ATTRIBUTE_MAPS = {
@@ -269,6 +270,23 @@ def delete_resource(coll, args):
         return data
 
 
+def init(args):
+    """Downloads and install a Stormpath sample project for the given platform"""
+
+    # sample_project = Project()
+    # sample_project.download()
+    # sample_project.install()
+
+    print("working java code")
+    sample_project = JavaProject()
+    sample_project.download()
+    sample_project.install()
+
+def run(arg):
+    """how do I know what to do?  find something in the config file?"""
+    sample_project = Project()
+    sample_project.run()
+
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
@@ -279,9 +297,11 @@ AVAILABLE_ACTIONS = {
     'setup': setup_credentials,
     'unset': delete_context,
     'status': show_status,
+    'init': init,
+    'run': run,
 }
 
-LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
+LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help', 'init', 'run')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
 STATUS_ACTION = 'status'
