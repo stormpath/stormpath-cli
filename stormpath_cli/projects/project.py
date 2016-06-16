@@ -1,3 +1,4 @@
+from glob import glob
 import subprocess
 import os
 
@@ -45,29 +46,53 @@ class Project(object):
     def lookup(klass, name):
         lookup_dict = {
             'express':{
-                cls:NodejsProject,
-                name:'stormpath-express-sample',
-                remote_location:'https://github.com/stormpath/express-stormpath-sample-project.git',
+                cls: NodejsProject,
+                name: 'stormpath-express-sample',
+                remote_location: 'https://github.com/stormpath/express-stormpath-sample-project.git',
             },
             'spring-boot' :{
-                cls:JavaProject,
-                name:'stormpath-spring-boot-sample',
-                remote_location:'https://github.com/stormpath/stormpath-sdk-java.git',
-                target_folder_name : "spring-boot-default",
+                cls: JavaProject,
+                name: 'stormpath-spring-boot-sample',
+                remote_location: 'https://github.com/stormpath/stormpath-sdk-java.git',
+                target_folder_name: "spring-boot-default",
             },
             'spring-boot-webmvc' :{
-                cls:JavaProject,
-                name:'stormpath-spring-boot-webvc-sample',
-                remote_location:'https://github.com/stormpath/stormpath-sdk-java.git',
-                target_folder_name:"spring-boot-webmvc",
+                cls: JavaProject,
+                name: 'stormpath-spring-boot-webvc-sample',
+                remote_location: 'https://github.com/stormpath/stormpath-sdk-java.git',
+                target_folder_name: "spring-boot-webmvc",
             },
             'spring-security-spring-boot-webmvc': {},
-            'spring':{},
-            'spring-webmvc':{},
-            'spring-security-webmvc':{},
+            'spring': {},
+            'spring-webmvc': {},
+            'spring-security-webmvc': {},
         }
-        return klass(...)
+        #return klass(...)
 
     @classmethod
-    def detect():
-        return JavaProject
+    def detect(cls):
+        from .java import JavaProject
+        from .node import NodeProject
+        #from .php import PHPProject
+        #from .ruby import RubyProject
+        #from .dotnet import DotNetProject
+
+        files = glob('*')
+
+        if 'pom.xml' in files:
+            return JavaProject()
+
+        #if 'composer.json' in files:
+        #    return PHPProject()
+
+        #if 'setup.py' in files:
+        #    return PythonProject()
+
+        #if 'Gemfile' in files:
+        #    return RubyProject()
+
+        #if 'dotnet?' in files:
+        #    return DotNetProject()
+
+        if 'package.json' in files:
+            return NodeProject()

@@ -1,3 +1,3 @@
 from project import *
-from javaproject import *
-from nodejsproject import *
+from java import *
+from node import *

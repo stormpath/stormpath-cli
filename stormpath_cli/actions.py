@@ -294,7 +294,7 @@ def init(args):
 
 def run(arg):
     """Run a Stormpath sample application."""
-    sample_project = Project()
+    sample_project = Project.detect()
     sample_project.run()
 
 
