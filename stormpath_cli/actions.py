@@ -5,7 +5,7 @@ from sys import exit
 from time import sleep
 
 from pyquery import PyQuery as pq
-from requests import Session, get, post
+from requests import Session
 from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
