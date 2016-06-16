@@ -1,6 +1,9 @@
 from __future__ import print_function
 import json
 from getpass import getpass
+from os import getcwd
+from os.path import basename
+from subprocess import call
 from sys import exit
 from time import sleep
 
@@ -18,7 +21,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
-from .util import store_config_file
+from .util import store_config_file, which
 
 
 ATTRIBUTE_MAPS = {
@@ -391,6 +394,36 @@ def register(args):
         done = True
 
 
+def deploy(args):
+    """Deploy this Stormpath sample application."""
+    project_name = basename(getcwd())
+
+    if not which('git'):
+        print(colored('\nERROR: It looks like you don\'t have the Git CLI installed, please set this up first.\n', 'red'))
+        exit(1)
+
+    if not which('heroku'):
+        print(colored('\nERROR: It looks like you don\'t have the Heroku CLI installed, please set this up first.\n', 'red'))
+        exit(1)
+
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
+    try:
+        answer = input(colored('Attempting to deploy project: {} to Heroku.  Continue? [y/n]: '.format(project_name), 'green'))
+        if 'y' not in answer:
+            exit(1)
+    except ValueError:
+        pass
+
+    call(['heroku', 'create', project_name])
+    call(['git', 'push', 'heroku', 'master'])
+
+    print(colored('\nYour Stormpath application has been successfully deployed to Heroku! Run `heroku open` to view it in a browser!', 'yellow'))
+
+
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
@@ -402,9 +435,10 @@ AVAILABLE_ACTIONS = {
     'unset': delete_context,
     'status': show_status,
     'register': register,
+    'deploy': deploy,
 }
 
-LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help')
+LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help', 'deploy')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
 STATUS_ACTION = 'status'

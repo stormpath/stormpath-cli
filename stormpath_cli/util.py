@@ -1,6 +1,6 @@
 import sys
-from os import chmod, environ, makedirs, rename, unlink
-from os.path import dirname, exists, join, splitdrive
+from os import X_OK, access, chmod, environ, makedirs, rename, unlink, pathsep
+from os.path import dirname, isfile, exists, join, splitdrive, split
 
 
 def get_root_path():
@@ -104,3 +104,21 @@ def properly_support_boolean_values(arguments):
     arguments['--is-default-account-store'] = _txt_to_bool(arguments.get('--is-default-account-store'))
     arguments['--is-default-group-store'] = _txt_to_bool(arguments.get('--is-default-group-store'))
     return arguments
+
+
+def which(program):
+    def is_exe(fpath):
+        return isfile(fpath) and access(fpath, X_OK)
+
+    fpath, fname = split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in environ['PATH'].split(pathsep):
+            path = path.strip('"')
+            exe_file = join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
