@@ -15,6 +15,7 @@ Actions:
     setup    Set up credentials for accessing the Stormpath API
     unset    Deletes the current context
     status   Prints out authentication info and context
+    deploy   Deploy your Stormpath Application to Heroku.
 
 Resources:
     application  Application Resource
