@@ -1,6 +1,6 @@
 import sys
-from os import chmod, environ, makedirs, rename, unlink
-from os.path import dirname, exists, join, splitdrive
+from os import X_OK, access, chmod, environ, makedirs, rename, unlink, pathsep
+from os.path import dirname, isfile, exists, join, splitdrive, split
 
 
 def get_root_path():
@@ -14,7 +14,7 @@ def get_root_path():
 def get_config_path(name):
     """Helper function for getting the cli config file path."""
     sp_root_dir = join(environ.get('HOME', get_root_path()), '.stormpath')
-    return join(sp_root_dir, 'cli', name)
+    return join(sp_root_dir, name)
 
 
 def store_config_file(name, data):
@@ -58,6 +58,7 @@ def strip_equal_sign(arguments):
             v.lstrip('=')
     return arguments
 
+
 def find_non_dash_arguments_and_default_action(arguments, resource, action):
     """Sets the default action to list if no action is supplied.
     Finds all param=value pairs (ie. without dashes)"""
@@ -77,6 +78,7 @@ def find_non_dash_arguments_and_default_action(arguments, resource, action):
         action = DEFAULT_ACTION
 
     return arguments, resource, action
+
 
 def check_primary_identifier_without_flags(arguments, resource, action):
     """See if the primary attribute (ie. name/email) is supplied without
@@ -102,3 +104,21 @@ def properly_support_boolean_values(arguments):
     arguments['--is-default-account-store'] = _txt_to_bool(arguments.get('--is-default-account-store'))
     arguments['--is-default-group-store'] = _txt_to_bool(arguments.get('--is-default-group-store'))
     return arguments
+
+
+def which(program):
+    def is_exe(fpath):
+        return isfile(fpath) and access(fpath, X_OK)
+
+    fpath, fname = split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in environ['PATH'].split(pathsep):
+            path = path.strip('"')
+            exe_file = join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None

@@ -1,18 +1,28 @@
 from __future__ import print_function
 import json
+from getpass import getpass
+from os import getcwd
+from os.path import basename
+from subprocess import call
+from sys import exit
+from time import sleep
 
-from stormpath.resources.account import AccountList, Account
+from pyquery import PyQuery as pq
+from requests import Session
+from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
 from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
+from termcolor import colored
 
-from .auth import setup_credentials
+from .auth import setup_credentials, init_auth
 from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
 from projects import *
+from .util import store_config_file, which
 
 
 ATTRIBUTE_MAPS = {
@@ -108,8 +118,7 @@ def _prompt_if_missing_parameters(coll, args, only_primary=False):
     if len(supplied_required_arguments) == required_coll_args.values():
         return args
 
-    remaining_coll_args = {k:v for k,v in all_coll_args.items()
-            if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
+    remaining_coll_args = {k: v for k, v in all_coll_args.items() if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
     if remaining_coll_args:
         get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
         get_logger().info('Fields without an asterisk are optional.')
@@ -287,6 +296,152 @@ def run(arg):
     sample_project = Project()
     sample_project.run()
 
+def register(args):
+    """Register for Stormpath."""
+    data = {}
+
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
+    try:
+        if init_auth(args):
+            answer = input(colored('It looks like you already have a Stormpath account. Continue anyway? [y/n]: ', 'green'))
+            if 'n' in answer:
+                exit(1)
+    except ValueError:
+        pass
+
+    # Register the user on Stormpath.
+    done = False
+    while not done:
+        session = Session()
+        resp = session.get('https://api.stormpath.com/register', headers={'accept': 'application/json'})
+
+        data['hpvalue'] = resp.json()['hpvalue']
+        data['csrfToken'] = resp.json()['csrfToken']
+
+        print('To register for Stormpath, please enter your information below.\n')
+        data['givenName'] = input(colored('First Name: ', 'green'))
+        data['surname'] = input(colored('Last Name: ', 'green'))
+        data['companyName'] = input(colored('Company Name: ', 'green'))
+        data['email'] = input(colored('Email: ', 'green'))
+        data['password'] = getpass(colored('Password: ', 'green'))
+        data['confirmedPassword'] = getpass(colored('Confirm Password: ', 'green'))
+
+        resp = session.post('https://api.stormpath.com/register', json=data)
+
+        if resp.status_code == 204:
+            input(colored('\nSuccessfully created your new Stormpath account!  Please open your email inbox and click the account verification link.  Then come back to this window and press enter.', 'yellow'))
+            done = True
+        else:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            print('Please try again.')
+
+    # Collect the user's tenant name.
+    done = False
+    while not done:
+        tenant = input(colored('\nPlease enter your Stormpath Tenant name (it can be found on the login page in your browser): ', 'green'))
+        answer = input(colored('Your Tenant name is: {}, is this correct?  [y\\n]: '.format(tenant), 'green'))
+
+        if 'y' in answer:
+            done = True
+
+    # Log the user in.
+    done = False
+    while not done:
+        login_session = Session()
+        resp = login_session.get('https://api.stormpath.com/login')
+
+        parser = pq(resp.text)
+        csrf_token = parser('input[name="csrfToken"]').val()
+        hpvalue = parser('input[name="hpvalue"]').val()
+
+        sleep(3)
+
+        resp = login_session.post('https://api.stormpath.com/login', data={
+            'tenantNameKey': tenant,
+            'email': data['email'],
+            'password': data['password'],
+            'csrfToken': csrf_token,
+            'hpvalue': hpvalue,
+        })
+
+        if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            exit(1)
+
+        done = True
+
+    # Create a new API key pair for this tenant, and download it.
+    done = False
+    while not done:
+        resp = login_session.get('https://api.stormpath.com/v1/accounts/current', headers={'accept': 'application/json'})
+        if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            print('Retrying Account request...')
+            sleep(1)
+            continue
+
+        account_url = resp.json()['href']
+
+        resp = login_session.post(account_url + '/apiKeys', headers={'accept': 'application/json'}, json={'nocache': True})
+        if resp.status_code != 201:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            print('Retrying API key creation...')
+            sleep(1)
+            continue
+
+        api_key_url = resp.headers['Location']
+
+        resp = login_session.get(api_key_url, headers={'accept': 'application/json'})
+        if resp.status_code != 200:
+            print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
+            print('Retrying API key fetching...')
+            sleep(1)
+            continue
+
+        id = resp.json()['id']
+        secret = resp.json()['secret']
+
+        store_config_file('apiKey.properties', 'apiKey.id = {}\napiKey.secret = {}\n'.format(id, secret))
+        print(colored('\nSuccessfully created API key for Stormpath usage. Saved as: ~/.stormpath/apiKey.properties', 'yellow'))
+        print(colored('You are now setup and ready to use Stormpath!', 'yellow'))
+
+        done = True
+
+
+def deploy(args):
+    """Deploy this Stormpath sample application."""
+    project_name = basename(getcwd())
+
+    if not which('git'):
+        print(colored('\nERROR: It looks like you don\'t have the Git CLI installed, please set this up first.\n', 'red'))
+        exit(1)
+
+    if not which('heroku'):
+        print(colored('\nERROR: It looks like you don\'t have the Heroku CLI installed, please set this up first.\n', 'red'))
+        exit(1)
+
+    try:
+        input = raw_input
+    except NameError:
+        pass
+
+    try:
+        answer = input(colored('Attempting to deploy project: {} to Heroku.  Continue? [y/n]: '.format(project_name), 'green'))
+        if 'y' not in answer:
+            exit(1)
+    except ValueError:
+        pass
+
+    call(['heroku', 'create', project_name])
+    call(['git', 'push', 'heroku', 'master'])
+
+    print(colored('\nYour Stormpath application has been successfully deployed to Heroku! Run `heroku open` to view it in a browser!', 'yellow'))
+
+
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
@@ -298,11 +453,13 @@ AVAILABLE_ACTIONS = {
     'unset': delete_context,
     'status': show_status,
     'init': init,
-    'run': run,
+    'run': run,      
+    'register': register,
+    'deploy': deploy,
 }
 
-LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help', 'init', 'run')
+
+LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help', 'deploy', 'init', 'run')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
 STATUS_ACTION = 'status'
-

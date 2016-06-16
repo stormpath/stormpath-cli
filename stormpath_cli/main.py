@@ -5,6 +5,7 @@
 A command-line client for the Stormpath REST API (https://stormpath.com).
 
 Actions:
+    register Create a new Stormpath account.
     list     List/search resources on Stormpath
     create   Create a resource on Stormpath
     update   Update a resource on Stormpath
@@ -14,6 +15,7 @@ Actions:
     setup    Set up credentials for accessing the Stormpath API
     unset    Deletes the current context
     status   Prints out authentication info and context
+    deploy   Deploy your Stormpath Application to Heroku.
 
 Resources:
     application  Application Resource
