@@ -1,6 +1,6 @@
 from project import *
 
-class NodejsProject(Project):
+class NodeProject(Project):
 
     name = 'stormpath-nodejs-sample'
     remote_location = 'https://github.com/stormpath/express-stormpath-sample-project.git'
