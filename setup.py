@@ -47,6 +47,7 @@ setup(
     license = 'Apache 2.0',
     install_requires = [
         'docopt>=0.6.1',
+        'requests>=2.10.0',
         'stormpath>=1.2.4',
     ],
     classifiers = [
