@@ -291,10 +291,12 @@ def init(args):
     sample_project.download()
     sample_project.install()
 
+
 def run(arg):
-    """how do I know what to do?  find something in the config file?"""
+    """Run a Stormpath sample application."""
     sample_project = Project()
     sample_project.run()
+
 
 def register(args):
     """Register for Stormpath."""
@@ -453,7 +455,7 @@ AVAILABLE_ACTIONS = {
     'unset': delete_context,
     'status': show_status,
     'init': init,
-    'run': run,      
+    'run': run,
     'register': register,
     'deploy': deploy,
 }

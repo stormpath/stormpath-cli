@@ -1,6 +1,7 @@
 import subprocess
 import os
 
+
 class Project(object):
 
     name = 'stormpath-sample'
@@ -16,7 +17,7 @@ class Project(object):
             self.name = name
 
         if remote_location is not None:
-            self.remote_location = remote_location        
+            self.remote_location = remote_location
 
     def download(self):
         if self.name is not None and self.name is not '':
@@ -44,19 +45,19 @@ class Project(object):
     def lookup(klass, name):
         lookup_dict = {
             'express':{
-                cls:NodejsProject, 
-                name:'stormpath-express-sample', 
+                cls:NodejsProject,
+                name:'stormpath-express-sample',
                 remote_location:'https://github.com/stormpath/express-stormpath-sample-project.git',
             },
             'spring-boot' :{
                 cls:JavaProject,
-                name:'stormpath-spring-boot-sample', 
+                name:'stormpath-spring-boot-sample',
                 remote_location:'https://github.com/stormpath/stormpath-sdk-java.git',
                 target_folder_name : "spring-boot-default",
             },
             'spring-boot-webmvc' :{
                 cls:JavaProject,
-                name:'stormpath-spring-boot-webvc-sample', 
+                name:'stormpath-spring-boot-webvc-sample',
                 remote_location:'https://github.com/stormpath/stormpath-sdk-java.git',
                 target_folder_name:"spring-boot-webmvc",
             },
@@ -67,7 +68,6 @@ class Project(object):
         }
         return klass(...)
 
-    @classmethod 
+    @classmethod
     def detect():
         return JavaProject
-
