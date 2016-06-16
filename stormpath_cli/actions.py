@@ -19,7 +19,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
-from .util import get_root_path
+from .util import get_root_path, store_config_file
 
 
 ATTRIBUTE_MAPS = {
@@ -373,11 +373,8 @@ def register(args):
             'secret': resp.json()['secret'],
         }
 
-        key_file = join(environ.get('HOME', get_root_path()), '.stormpath', 'apiKey.properties')
-        with open(key_file, 'wb') as f:
-            f.write('apiKey.id = {}\n'.format(key['id']))
-            f.write('apiKey.secret = {}\n'.format(key['secret']))
-            print('Successfully created API key for Stormpath usage. Saved as: {}'.format(key_file))
+        store_config_file('apiKey.properties', 'apiKey.id = {}\napiKey.secret = {}\n'.format(key['id'], key['secret']))
+        print('Successfully created API key for Stormpath usage. Saved as: {}'.format(key_file))
 
         done = True
 
