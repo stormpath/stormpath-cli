@@ -279,7 +279,6 @@ def delete_resource(coll, args):
 def register(args):
     """Register for Stormpath."""
     data = {}
-    key_file = join(environ.get('HOME'), get_root_path(), '.stormpath', 'apiKey.properties')
     done = False
 
     rresp = get('https://api.stormpath.com/register', headers={'accept': 'application/json'})
@@ -374,7 +373,7 @@ def register(args):
         }
 
         store_config_file('apiKey.properties', 'apiKey.id = {}\napiKey.secret = {}\n'.format(key['id'], key['secret']))
-        print('Successfully created API key for Stormpath usage. Saved as: {}'.format(key_file))
+        print('Successfully created API key for Stormpath usage. Saved as: ~/.stormpath/apiKey.properties')
 
         done = True
 
