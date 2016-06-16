@@ -52,6 +52,7 @@ def get_groups(client, args):
     """Gets all groups from the current context"""
     return _get_context(client, args).groups
 
+
 def get_mappings(client, args):
     """Gets all accounts store mappings for the set application"""
     return _get_context(client, args).account_store_mappings
