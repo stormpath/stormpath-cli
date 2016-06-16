@@ -1,5 +1,6 @@
 from project import *
 
+
 class JavaProject(Project):
     target_folder_name = "spring-boot-default"
     name = 'stormpath-java-sample'
@@ -42,4 +43,3 @@ class JavaProject(Project):
         os.chdir('..')
 
     #end download
-
