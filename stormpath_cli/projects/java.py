@@ -10,7 +10,7 @@ class JavaProject(Project):
     deploy_args = []
 
     def download(self):
-        
+
         #We're going to use a temp file to keep all the java sdk files while we create sample app directory
         #it'll get cleanuped before we're done
         temp_folder = "__stormpath-cli-java-temp"
@@ -27,8 +27,8 @@ class JavaProject(Project):
 
         subprocess.call(['git', 'checkout', latest_tag])
         os.chdir('..')
-        
-        #move the sample the intended folder the user will be using    
+
+        #move the sample the intended folder the user will be using
         subprocess.call(['mkdir', self.name])
         subprocess.call(['cp', '-R', '%s/examples/%s/'%(temp_folder, self.target_folder_name), self.name])
 
