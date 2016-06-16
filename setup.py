@@ -50,6 +50,7 @@ setup(
         'pyquery>=1.2.13',
         'requests>=2.10.0',
         'stormpath>=1.2.4',
+        'termcolor>=1.1.0',
     ],
     classifiers = [
         'Development Status :: 3 - Alpha',
