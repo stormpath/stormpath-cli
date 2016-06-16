@@ -13,7 +13,7 @@ from stormpath.resources.directory import DirectoryList
 from stormpath.resources.group import GroupList
 from termcolor import colored
 
-from .auth import setup_credentials
+from .auth import setup_credentials, init_auth
 from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
@@ -282,6 +282,14 @@ def register(args):
     try:
         input = raw_input
     except NameError:
+        pass
+
+    try:
+        if init_auth(args):
+            answer = input(colored('It looks like you already have a Stormpath account. Continue anyway? [y/n]: ', 'green'))
+            if 'n' in answer:
+                exit(1)
+    except ValueError:
         pass
 
     # Register the user on Stormpath.
