@@ -14,7 +14,7 @@ def get_root_path():
 def get_config_path(name):
     """Helper function for getting the cli config file path."""
     sp_root_dir = join(environ.get('HOME', get_root_path()), '.stormpath')
-    return join(sp_root_dir, 'cli', name)
+    return join(sp_root_dir, name)
 
 
 def store_config_file(name, data):
