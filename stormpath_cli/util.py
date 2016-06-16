@@ -58,6 +58,7 @@ def strip_equal_sign(arguments):
             v.lstrip('=')
     return arguments
 
+
 def find_non_dash_arguments_and_default_action(arguments, resource, action):
     """Sets the default action to list if no action is supplied.
     Finds all param=value pairs (ie. without dashes)"""
@@ -77,6 +78,7 @@ def find_non_dash_arguments_and_default_action(arguments, resource, action):
         action = DEFAULT_ACTION
 
     return arguments, resource, action
+
 
 def check_primary_identifier_without_flags(arguments, resource, action):
     """See if the primary attribute (ie. name/email) is supplied without
