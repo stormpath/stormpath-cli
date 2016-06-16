@@ -1,7 +1,7 @@
 from __future__ import print_function
 import json
 
-from stormpath.resources.account import AccountList, Account
+from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
 from stormpath.resources.directory import DirectoryList
@@ -107,8 +107,7 @@ def _prompt_if_missing_parameters(coll, args, only_primary=False):
     if len(supplied_required_arguments) == required_coll_args.values():
         return args
 
-    remaining_coll_args = {k:v for k,v in all_coll_args.items()
-            if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
+    remaining_coll_args = {k: v for k, v in all_coll_args.items() if v in set(all_coll_args.values()) - set(supplied_required_arguments)}
     if remaining_coll_args:
         get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
         get_logger().info('Fields without an asterisk are optional.')
@@ -285,4 +284,3 @@ LOCAL_ACTIONS = ('setup', 'context', 'unset', 'help')
 DEFAULT_ACTION = 'list'
 SET_ACTION = 'set'
 STATUS_ACTION = 'status'
-
