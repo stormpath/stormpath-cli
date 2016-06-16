@@ -1,8 +1,6 @@
 from __future__ import print_function
 import json
 from getpass import getpass
-from os import environ
-from os.path import join
 from sys import exit
 from time import sleep
 
