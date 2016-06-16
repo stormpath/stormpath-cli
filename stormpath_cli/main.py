@@ -5,6 +5,7 @@
 A command-line client for the Stormpath REST API (https://stormpath.com).
 
 Actions:
+    register Create a new Stormpath account.
     list     List/search resources on Stormpath
     create   Create a resource on Stormpath
     update   Update a resource on Stormpath
