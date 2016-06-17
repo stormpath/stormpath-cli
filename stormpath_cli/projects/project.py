@@ -40,7 +40,7 @@ class Project(object):
 
         chdir(self.name)
         with open('.env', 'wb') as f:
-            f.write('export STORMPATH_APPLICATION={}'.format(app.href))
+            f.write('export STORMPATH_APPLICATION_HREF={}\n'.format(app.href))
         chdir('..')
 
     def install(self):
