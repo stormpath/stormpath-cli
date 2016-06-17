@@ -287,12 +287,7 @@ def init(args):
     if name and len(name) > 0:
         name = name[0].split('name=')[1]
 
-    # sample_project = Project()
-    # sample_project.download()
-    # sample_project.install()
-
-    print("working java code")
-    sample_project = JavaProject()
+    sample_project = Project.create_from_type(type, name)
     sample_project.download()
     sample_project.install()
 
