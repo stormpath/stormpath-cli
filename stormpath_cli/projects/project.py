@@ -1,4 +1,5 @@
 from glob import glob
+from json import dumps
 from os import chdir
 from subprocess import call
 
@@ -9,8 +10,6 @@ from ..util import which
 
 class Project(object):
     download_args = ['git', 'clone']
-    install_args = ['npm', 'install']
-    run_args = ['node', 'server.js']
 
     def __init__(self, remote_location, name=None):
         self.remote_location = remote_location
@@ -28,6 +27,21 @@ class Project(object):
         else:
             call(self.download_args + [self.remote_location])
             self.name = self.remote_location.split('.')[-2].split('/')[-1]
+
+    def create_app(self, client):
+        """Create a new Stormpath application."""
+        total_apps = len(client.applications)
+        if total_apps == 1:
+            app = client.applications.create({'name': self.name}, create_directory=True)
+        else:
+            for app in client.applications:
+                if app.name != 'Stormpath':
+                    break
+
+        chdir(self.name)
+        with open('.env', 'wb') as f:
+            f.write('export STORMPATH_APPLICATION={}'.format(app.href))
+        chdir('..')
 
     def install(self):
         if not which(self.install_args[0]):
