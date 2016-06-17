@@ -16,10 +16,11 @@ class Project(object):
             self.name = name
 
     def download(self):
-        if self.name is not None and self.name is not '':
+        if self.name:
             subprocess.call(self.download_args + [self.remote_location, self.name])
         else:
             subprocess.call(self.download_args + [self.remote_location])
+            self.name = self.remote_location.split('.')[-2].split('/')[-1]
 
     def install(self,args=None):
         """gonna test it within the folder"""
