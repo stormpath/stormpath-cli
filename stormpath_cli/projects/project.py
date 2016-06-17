@@ -38,10 +38,6 @@ class Project(object):
         #from .dotnet import DotNetProject
 
         lookup_dict = {
-            'node': {
-                'cls': NodeProject,
-                'remote_location': 'https://github.com/stormpath/stormpath-sdk-node.git',
-            },
             'express': {
                 'cls': NodeProject,
                 'remote_location': 'https://github.com/stormpath/express-stormpath-sample-project.git',
@@ -82,7 +78,7 @@ class Project(object):
         files = glob('*')
 
         if 'pom.xml' in files:
-            return JavaProject()
+            return JavaProject('dummy', 'dummy', 'dummy')
 
         #if 'composer.json' in files:
         #    return PHPProject()
@@ -97,4 +93,4 @@ class Project(object):
         #    return DotNetProject()
 
         if 'package.json' in files:
-            return NodeProject()
+            return NodeProject('dummy', 'dummy')
