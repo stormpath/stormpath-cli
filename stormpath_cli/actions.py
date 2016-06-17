@@ -9,6 +9,7 @@ from time import sleep
 
 from pyquery import PyQuery as pq
 from requests import Session
+from stormpath.client import Client
 from stormpath.resources.account import AccountList
 from stormpath.resources.application import ApplicationList
 from stormpath.resources.account_store_mapping import AccountStoreMappingList
@@ -21,7 +22,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
-from projects import *
+from projects import Project
 from .util import store_config_file, which
 
 
@@ -281,6 +282,15 @@ def delete_resource(coll, args):
 
 def init(args):
     """Downloads and installs a Stormpath sample project for the given platform."""
+    from .main import USER_AGENT
+
+    try:
+        auth_args = init_auth(args)
+        client = Client(user_agent=USER_AGENT, **auth_args)
+    except ValueError as ex:
+        log.error(str(ex))
+        exit(1)
+
     type = args.get('<resource>')
     name = args.get('<attributes>')
 
@@ -289,6 +299,7 @@ def init(args):
 
     sample_project = Project.create_from_type(type, name)
     sample_project.download()
+    sample_project.create_app(client)
     sample_project.install()
 
 
