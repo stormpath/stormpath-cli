@@ -1,10 +1,11 @@
 Version 0.1.0
 -------------
 
-**Not yet released.**
+**Released on June 17, 2016.**
 
 - Adding support for Stormpath registration via `register` command.
 - Switching to `~/.stormpath/apiKey.properties` for authentication.
+- Adding support for `stormpath init` command to bootstrap sample projects.
 
 Version 0.0.2
 -------------
