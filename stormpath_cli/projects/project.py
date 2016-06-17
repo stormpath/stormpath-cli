@@ -1,13 +1,12 @@
 from glob import glob
-import subprocess
-import os
+from os import chdir
+from subprocess import call
 
 
 class Project(object):
     download_args = ['git', 'clone']
     install_args = ['npm', 'install']
     run_args = ['node', 'server.js']
-    deploy_args = []
 
     def __init__(self, remote_location, name=None):
         self.remote_location = remote_location
@@ -17,22 +16,18 @@ class Project(object):
 
     def download(self):
         if self.name:
-            subprocess.call(self.download_args + [self.remote_location, self.name])
+            call(self.download_args + [self.remote_location, self.name])
         else:
-            subprocess.call(self.download_args + [self.remote_location])
+            call(self.download_args + [self.remote_location])
             self.name = self.remote_location.split('.')[-2].split('/')[-1]
 
-    def install(self, args=None):
-        os.chdir(self.name)
-        subprocess.call(self.install_args)
-        os.chdir('..')
+    def install(self):
+        chdir(self.name)
+        call(self.install_args)
+        chdir('..')
 
-    def run(self, project_name=None):
-        """if theres no project name than run within the folder you're in"""
-        subprocess.call(self.run_args)
-
-    def deploy(self):
-        subprocess.call(self.deploy_args)
+    def run(self):
+        call(self.run_args)
 
     @classmethod
     def create_from_type(cls, type, name=None):
