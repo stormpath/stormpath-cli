@@ -5,13 +5,15 @@ from project import Project
 
 
 class JavaProject(Project):
-    target_folder_name = "spring-boot-default"
-    name = 'stormpath-java-sample'
-    remote_location = 'https://github.com/stormpath/stormpath-sdk-java.git'
-    download_args = ['git', 'clone']
     install_args = ['mvn', 'clean', 'install', '-Dmaven.test.skip=true']
     run_args = ['java', '-jar', 'target/*.jar']
-    deploy_args = []
+
+    def __init__(self, remote_location, target_folder_name, name=None):
+        self.remote_location = remote_location
+        self.target_folder_name = target_folder_name
+
+        if name is not None:
+            self.name = name
 
     def download(self):
         # We're going to use a temp file to keep all the java sdk files while we create sample app directory

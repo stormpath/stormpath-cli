@@ -66,6 +66,13 @@ class Project(object):
             #'spring-security-webmvc': {},
         }
 
+        if lookup_dict[type.lower()]['cls'] == JavaProject:
+            return lookup_dict[type.lower()]['cls'](
+                name = name,
+                remote_location = lookup_dict[type.lower()]['remote_location'],
+                target_folder_name = lookup_dict[type.lower()]['target_folder_name']
+            )
+
         return lookup_dict[type.lower()]['cls'](name=name, remote_location=lookup_dict[type.lower()]['remote_location'])
 
     @classmethod
