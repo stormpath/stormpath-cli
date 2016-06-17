@@ -31,7 +31,7 @@ class Project(object):
 
     def install(self):
         if not which(self.install_args[0]):
-            print(colored('\nERROR: It looks like you don\'t have {} installed, please set this up first.\n'.format(self.run_args[0]), 'red'))
+            print(colored('\nERROR: It looks like you don\'t have {} installed, please set this up first.\n'.format(self.install_args[0]), 'red'))
             exit(1)
 
         chdir(self.name)
@@ -49,7 +49,7 @@ class Project(object):
     def create_from_type(cls, type, name=None):
         from .java import JavaProject
         from .node import NodeProject
-        #from .php import PHPProject
+        from .php import PHPProject
         from .ruby import RubyProject
         #from .dotnet import DotNetProject
 
@@ -71,7 +71,11 @@ class Project(object):
             'ruby': {
                 'cls': RubyProject,
                 'remote_location': 'https://github.com/stormpath/stormpath-heroku-ruby-sample.git',
-            }
+            },
+            'laravel': {
+                'cls': PHPProject,
+                'remote_location': 'https://github.com/stormpath/stormpath-laravel-example.git',
+            },
         }
 
         if lookup_dict[type.lower()]['cls'] == JavaProject:
@@ -87,7 +91,7 @@ class Project(object):
     def detect(cls):
         from .java import JavaProject
         from .node import NodeProject
-        #from .php import PHPProject
+        from .php import PHPProject
         from .ruby import RubyProject
         #from .dotnet import DotNetProject
 
@@ -96,8 +100,8 @@ class Project(object):
         if 'pom.xml' in files:
             return JavaProject('dummy', 'dummy', 'dummy')
 
-        #if 'composer.json' in files:
-        #    return PHPProject()
+        if 'composer.json' in files:
+            return PHPProject('dummy', 'dummy')
 
         #if 'setup.py' in files:
         #    return PythonProject()
