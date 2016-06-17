@@ -22,11 +22,9 @@ class Project(object):
             subprocess.call(self.download_args + [self.remote_location])
             self.name = self.remote_location.split('.')[-2].split('/')[-1]
 
-    def install(self,args=None):
-        """gonna test it within the folder"""
-        #print("folder:%s  cmd: %s"% (self.name, self.install_args + args if args else self.install_args))
+    def install(self, args=None):
         os.chdir(self.name)
-        subprocess.call(self.install_args + args if args else self.install_args)
+        subprocess.call(self.install_args)
         os.chdir('..')
 
     def run(self, project_name=None):
