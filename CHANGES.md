@@ -1,3 +1,11 @@
+Version 0.1.1
+-------------
+
+**Released on June 17, 2016.**
+
+- Fixing environment variable creation.
+
+
 Version 0.1.0
 -------------
 
