@@ -84,6 +84,10 @@ class Project(object):
             'django': {
                 'cls': PythonProject,
                 'remote_location': 'https://github.com/stormpath/stormpath-django-sample.git',
+            },
+            'passport': {
+                'cls': NodeProject,
+                'remote_location': 'https://github.com/stormpath/stormpath-passport-express-sample.git',
             }
         }
 
