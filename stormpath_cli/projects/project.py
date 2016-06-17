@@ -4,7 +4,7 @@ from subprocess import call
 
 from termcolor import colored
 
-from ..utils import which
+from ..util import which
 
 
 class Project(object):
@@ -30,7 +30,7 @@ class Project(object):
             self.name = self.remote_location.split('.')[-2].split('/')[-1]
 
     def install(self):
-        if not which(self.run_args[0]):
+        if not which(self.install_args[0]):
             print(colored('\nERROR: It looks like you don\'t have {} installed, please set this up first.\n'.format(self.run_args[0]), 'red'))
             exit(1)
 
@@ -50,7 +50,7 @@ class Project(object):
         from .java import JavaProject
         from .node import NodeProject
         #from .php import PHPProject
-        #from .ruby import RubyProject
+        from .ruby import RubyProject
         #from .dotnet import DotNetProject
 
         lookup_dict = {
@@ -68,6 +68,10 @@ class Project(object):
                 'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
                 'target_folder_name': 'spring-boot-webmvc',
             },
+            'ruby': {
+                'cls': RubyProject,
+                'remote_location': 'https://github.com/stormpath/stormpath-heroku-ruby-sample.git',
+            }
         }
 
         if lookup_dict[type.lower()]['cls'] == JavaProject:
@@ -84,7 +88,7 @@ class Project(object):
         from .java import JavaProject
         from .node import NodeProject
         #from .php import PHPProject
-        #from .ruby import RubyProject
+        from .ruby import RubyProject
         #from .dotnet import DotNetProject
 
         files = glob('*')
@@ -98,8 +102,8 @@ class Project(object):
         #if 'setup.py' in files:
         #    return PythonProject()
 
-        #if 'Gemfile' in files:
-        #    return RubyProject()
+        if 'Gemfile' in files:
+            return RubyProject('dummy', 'dummy')
 
         #if 'dotnet?' in files:
         #    return DotNetProject()

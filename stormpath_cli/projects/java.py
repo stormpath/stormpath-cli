@@ -5,7 +5,7 @@ from sys import exit
 
 from termcolor import colored
 
-from ..utils import which
+from ..util import which
 from project import Project
 
 
