@@ -51,6 +51,7 @@ class Project(object):
         from .node import NodeProject
         from .php import PHPProject
         from .ruby import RubyProject
+        from .python import PythonProject
         #from .dotnet import DotNetProject
 
         lookup_dict = {
@@ -76,6 +77,14 @@ class Project(object):
                 'cls': PHPProject,
                 'remote_location': 'https://github.com/stormpath/stormpath-laravel-example.git',
             },
+            'flask': {
+                'cls': PythonProject,
+                'remote_location': 'https://github.com/stormpath/stormpath-flask-sample.git',
+            },
+            'django': {
+                'cls': PythonProject,
+                'remote_location': 'https://github.com/stormpath/stormpath-django-sample.git',
+            }
         }
 
         if lookup_dict[type.lower()]['cls'] == JavaProject:
@@ -93,6 +102,7 @@ class Project(object):
         from .node import NodeProject
         from .php import PHPProject
         from .ruby import RubyProject
+        from .python import PythonProject
         #from .dotnet import DotNetProject
 
         files = glob('*')
@@ -103,8 +113,8 @@ class Project(object):
         if 'composer.json' in files:
             return PHPProject('dummy', 'dummy')
 
-        #if 'setup.py' in files:
-        #    return PythonProject()
+        if 'setup.py' in files or 'requirements.txt' in files:
+            return PythonProject('dummy', 'dummy')
 
         if 'Gemfile' in files:
             return RubyProject('dummy', 'dummy')
