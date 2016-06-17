@@ -21,7 +21,9 @@ class JavaProject(Project):
         call(self.run_args + jars)
 
     def download(self):
-        self.name = 'stormpath-{}-sample'.format(self.target_folder_name)
+        if not self.name:
+            self.name = 'stormpath-{}-sample'.format(self.target_folder_name)
+
         temp_folder = "__stormpath-cli-java-temp"
 
         call(self.download_args + [self.remote_location, temp_folder])
