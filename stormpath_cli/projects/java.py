@@ -1,7 +1,11 @@
 from glob import glob
 from os import chdir
 from subprocess import call, check_output
+from sys import exit
 
+from termcolor import colored
+
+from ..utils import which
 from project import Project
 
 
@@ -17,10 +21,18 @@ class JavaProject(Project):
             self.name = name
 
     def run(self):
+        if not which('java'):
+            print(colored('\nERROR: It looks like you don\'t have Java insalled.  Please set this up first.\n', 'red'))
+            exit(1)
+
         jars = glob('target/*.jar')
         call(self.run_args + jars)
 
     def download(self):
+        if not which('git'):
+            print(colored('\nERROR: It looks like you don\'t have Git insalled.  Please set this up first.\n', 'red'))
+            exit(1)
+
         if not self.name:
             self.name = 'stormpath-{}-sample'.format(self.target_folder_name)
 

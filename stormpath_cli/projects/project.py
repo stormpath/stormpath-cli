@@ -2,6 +2,10 @@ from glob import glob
 from os import chdir
 from subprocess import call
 
+from termcolor import colored
+
+from ..utils import which
+
 
 class Project(object):
     download_args = ['git', 'clone']
@@ -15,6 +19,10 @@ class Project(object):
             self.name = name
 
     def download(self):
+        if not which('git'):
+            print(colored('\nERROR: It looks like you don\'t have the Git CLI installed, please set this up first.\n', 'red'))
+            exit(1)
+
         if self.name:
             call(self.download_args + [self.remote_location, self.name])
         else:
@@ -22,11 +30,19 @@ class Project(object):
             self.name = self.remote_location.split('.')[-2].split('/')[-1]
 
     def install(self):
+        if not which(self.run_args[0]):
+            print(colored('\nERROR: It looks like you don\'t have {} installed, please set this up first.\n'.format(self.run_args[0]), 'red'))
+            exit(1)
+
         chdir(self.name)
         call(self.install_args)
         chdir('..')
 
     def run(self):
+        if not which(self.run_args[0]):
+            print(colored('\nERROR: It looks like you don\'t have {} installed, please set this up first.\n'.format(self.run_args[0]), 'red'))
+            exit(1)
+
         call(self.run_args)
 
     @classmethod
