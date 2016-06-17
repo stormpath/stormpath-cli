@@ -280,7 +280,12 @@ def delete_resource(coll, args):
 
 
 def init(args):
-    """Downloads and install a Stormpath sample project for the given platform"""
+    """Downloads and installs a Stormpath sample project for the given platform."""
+    type = args.get('<resource>')
+    name = args.get('<attributes>')
+
+    if name and len(name) > 0:
+        name = name[0].split('name=')[1]
 
     # sample_project = Project()
     # sample_project.download()

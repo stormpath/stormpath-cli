@@ -4,14 +4,12 @@ import os
 
 
 class Project(object):
-
     name = 'stormpath-sample'
     remote_location = 'https://github.com/stormpath/express-stormpath-sample-project.git'
     download_args = ['git', 'clone']
     install_args = ['npm', 'install']
     run_args = ['node', 'server.js']
     deploy_args = []
-
 
     def __init__(self, name=None, remote_location=None, ):
         if name is not None:
@@ -25,8 +23,6 @@ class Project(object):
             subprocess.call(self.download_args + [self.remote_location, self.name])
         else:
             subprocess.call(self.download_args + [self.remote_location])
-
-    #end download
 
     def install(self,args=None):
         """gonna test it within the folder"""

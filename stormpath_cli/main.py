@@ -16,6 +16,8 @@ Actions:
     unset    Deletes the current context
     status   Prints out authentication info and context
     deploy   Deploy your Stormpath Application to Heroku.
+    run      Run a Stormpath Application.
+    init     Initialize a new Stormpath sample Application.
 
 Resources:
     application  Application Resource
@@ -49,6 +51,10 @@ List/search/create options:
     -G <group>..., --groups <group>...      Groups to which to add a resource. Valid for accounts.
     -R, --create-directory                  When creating an application create the directory. Valid for applications.
     --href <href>                           When referencing already created Resources (ie. for update)
+
+Init options:
+    <sample-type> [<sample-name>]           When initializing a new Stormpath project, supply the type and name.
+                                            Type can be: express, spring, or flask.
 
 Specific search options are only available for resources that have matching
 attributes. Option '--query' matches on substrings, but all of the other search
