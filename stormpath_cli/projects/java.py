@@ -1,3 +1,4 @@
+from glob import glob
 from os import chdir
 from subprocess import call, check_output
 
@@ -6,7 +7,7 @@ from project import Project
 
 class JavaProject(Project):
     install_args = ['mvn', 'clean', 'install', '-Dmaven.test.skip=true']
-    run_args = ['java', '-jar', 'target/*.jar']
+    run_args = ['java', '-jar']
 
     def __init__(self, remote_location, target_folder_name, name=None):
         self.remote_location = remote_location
@@ -14,6 +15,10 @@ class JavaProject(Project):
 
         if name is not None:
             self.name = name
+
+    def run(self):
+        jars = glob('target/*.jar')
+        call(self.run_args + jars)
 
     def download(self):
         self.name = 'stormpath-{}-sample'.format(self.target_folder_name)
