@@ -40,23 +40,19 @@ class Project(object):
         lookup_dict = {
             'node': {
                 'cls': NodeProject,
-                'name': 'stormpath-node-sample',
                 'remote_location': 'https://github.com/stormpath/stormpath-sdk-node.git',
             },
             'express': {
                 'cls': NodeProject,
-                'name': 'stormpath-express-sample',
                 'remote_location': 'https://github.com/stormpath/express-stormpath-sample-project.git',
             },
             'spring-boot': {
                 'cls': JavaProject,
-                'name': 'stormpath-spring-boot-sample',
                 'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
-                'target_folder_name': 'spring-boot-default',
+                'target_folder_name': 'spring-boot',
             },
             'spring-boot-webmvc': {
                 'cls': JavaProject,
-                'name': 'stormpath-spring-boot-webvc-sample',
                 'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
                 'target_folder_name': 'spring-boot-webmvc',
             },
