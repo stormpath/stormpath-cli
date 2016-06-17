@@ -4,19 +4,16 @@ import os
 
 
 class Project(object):
-    name = 'stormpath-sample'
-    remote_location = 'https://github.com/stormpath/express-stormpath-sample-project.git'
     download_args = ['git', 'clone']
     install_args = ['npm', 'install']
     run_args = ['node', 'server.js']
     deploy_args = []
 
-    def __init__(self, name=None, remote_location=None, ):
+    def __init__(self, remote_location, name=None):
+        self.remote_location = remote_location
+
         if name is not None:
             self.name = name
-
-        if remote_location is not None:
-            self.remote_location = remote_location
 
     def download(self):
         if self.name is not None and self.name is not '':
@@ -39,31 +36,43 @@ class Project(object):
         subprocess.call(self.deploy_args)
 
     @classmethod
-    def lookup(klass, name):
+    def create_from_type(cls, type, name=None):
+        from .java import JavaProject
+        from .node import NodeProject
+        #from .php import PHPProject
+        #from .ruby import RubyProject
+        #from .dotnet import DotNetProject
+
         lookup_dict = {
-            'express':{
-                cls: NodejsProject,
-                name: 'stormpath-express-sample',
-                remote_location: 'https://github.com/stormpath/express-stormpath-sample-project.git',
+            'node': {
+                'cls': NodeProject,
+                'name': 'stormpath-node-sample',
+                'remote_location': 'https://github.com/stormpath/stormpath-sdk-node.git',
             },
-            'spring-boot' :{
-                cls: JavaProject,
-                name: 'stormpath-spring-boot-sample',
-                remote_location: 'https://github.com/stormpath/stormpath-sdk-java.git',
-                target_folder_name: "spring-boot-default",
+            'express': {
+                'cls': NodeProject,
+                'name': 'stormpath-express-sample',
+                'remote_location': 'https://github.com/stormpath/express-stormpath-sample-project.git',
             },
-            'spring-boot-webmvc' :{
-                cls: JavaProject,
-                name: 'stormpath-spring-boot-webvc-sample',
-                remote_location: 'https://github.com/stormpath/stormpath-sdk-java.git',
-                target_folder_name: "spring-boot-webmvc",
+            'spring-boot': {
+                'cls': JavaProject,
+                'name': 'stormpath-spring-boot-sample',
+                'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
+                'target_folder_name': 'spring-boot-default',
             },
-            'spring-security-spring-boot-webmvc': {},
-            'spring': {},
-            'spring-webmvc': {},
-            'spring-security-webmvc': {},
+            'spring-boot-webmvc': {
+                'cls': JavaProject,
+                'name': 'stormpath-spring-boot-webvc-sample',
+                'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
+                'target_folder_name': 'spring-boot-webmvc',
+            },
+            #'spring-security-spring-boot-webmvc': {},
+            #'spring': {},
+            #'spring-webmvc': {},
+            #'spring-security-webmvc': {},
         }
-        #return klass(...)
+
+        return lookup_dict[type.lower()]['cls'](name=name, remote_location=lookup_dict[type.lower()]['remote_location'])
 
     @classmethod
     def detect(cls):
