@@ -54,7 +54,8 @@ List/search/create options:
 
 Init options:
     <sample-type> [<sample-name>]           When initializing a new Stormpath project, supply the type and name.
-                                            Type can be: express, spring, or flask.
+                                            Type can be: express, spring-boot, spring-boot-webmvc, ruby,
+                                            laravel, flask, django, or passport.
 
 Specific search options are only available for resources that have matching
 attributes. Option '--query' matches on substrings, but all of the other search
