@@ -416,7 +416,7 @@ def register(args):
 
 def deploy(args):
     """Deploy this Stormpath sample application."""
-    project_name = basename(getcwd())
+    project_name = basename(getcwd()) if args['<resource>'] is None else args['<resource>']
 
     if not which('git'):
         print(colored('\nERROR: It looks like you don\'t have the Git CLI installed, please set this up first.\n', 'red'))
@@ -439,6 +439,7 @@ def deploy(args):
         pass
 
     call(['heroku', 'create', project_name])
+    call(['heroku', 'addons:create', 'stormpath'])
     call(['git', 'push', 'heroku', 'master'])
 
     print(colored('\nYour Stormpath application has been successfully deployed to Heroku! Run `heroku open` to view it in a browser!', 'yellow'))
