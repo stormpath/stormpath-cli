@@ -52,10 +52,6 @@ class Project(object):
                 'remote_location': 'https://github.com/stormpath/stormpath-sdk-java.git',
                 'target_folder_name': 'spring-boot-webmvc',
             },
-            #'spring-security-spring-boot-webmvc': {},
-            #'spring': {},
-            #'spring-webmvc': {},
-            #'spring-security-webmvc': {},
         }
 
         if lookup_dict[type.lower()]['cls'] == JavaProject:
