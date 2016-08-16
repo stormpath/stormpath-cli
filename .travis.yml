@@ -2,10 +2,12 @@ sudo: false
 language: python
 python:
 - '2.7'
-install:
-- pip install -e .[test]
-script:
-- python setup.py test
+install: pip install -e .[test]
+script: python setup.py test
+after_success:
+- coverage xml
+- coveralls
+- python-codacy-coverage -r coverage.xml
 env:
   global:
     secure: EmmooMDlYddJY1UlfN2kG0d6N0oeRrthKi4ABc3tDdUJYvAncUsI0ahKVEXmjslg1YdwG32SNCQhoRO3QjYPZ4IlwM+omB5ZZurOw94a6JRW67wyLNpM56wJoSMriVgcsR5y/bidUgGRe+MdwUNlRexvHcRiEVAck9gTkCCluB0=
