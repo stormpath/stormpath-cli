@@ -3,7 +3,7 @@
 
 
 from subprocess import call
-from sys import version_info
+from sys import exit, version_info
 
 from setuptools import Command, find_packages, setup
 from stormpath_cli import __version__ as version
@@ -25,7 +25,7 @@ class RunTests(Command):
 
     def run(self):
         """Run the tests."""
-        raise SystemExit(call(['py.test']))
+        exit(call(['py.test', '--quiet', '--cov-report=term-missing', '--cov', 'stormpath_cli']))
 
 
 setup(
