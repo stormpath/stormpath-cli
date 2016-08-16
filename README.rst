@@ -1,8 +1,31 @@
-## Stormpath CLI
+Stormpath CLI
+=============
 
-A command-line client for the Stormpath REST API (https://stormpath.com).
+.. image:: https://img.shields.io/pypi/v/stormpath-cli.svg
+    :alt: stormpath-cli Release
+    :target: https://pypi.python.org/pypi/stormpath-cli
 
-### Install:
+.. image:: https://img.shields.io/pypi/dm/stormpath-cli.svg
+    :alt: stormpath-cli Downloads
+    :target: https://pypi.python.org/pypi/stormpath-cli
+
+.. image:: https://api.codacy.com/project/badge/grade/e0c3fc1980ae4dabb86086dec8644220
+    :alt: stormpath-cli Code Quality
+    :target: https://www.codacy.com/app/r/stormpath-cli
+
+.. image:: https://img.shields.io/travis/stormpath/stormpath-cli.svg
+    :alt: stormpath-cli Build
+    :target: https://travis-ci.org/stormpath/stormpath-cli
+
+.. image:: https://coveralls.io/repos/github/stormpath/stormpath-cli/badge.svg?branch=master
+    :alt: stormpath-cli Coverage
+    :target: https://coveralls.io/github/stormpath/stormpath-cli?branch=master
+
+A command-line client for `Stormpath <https://stormpath.com>`_.
+
+
+Install
+-------
 
 If you're using a Mac, you can install this CLI tool via
 [Homebrew](http://brew.sh/):
@@ -19,10 +42,12 @@ Python and [pip](http://pip.readthedocs.org/en/stable/), you can do so via:
 pip install stormpath-cli
 ```
 
-### Usage:
+Usage
+-----
 
 
-#### Get an API Key
+Get an API Key
+^^^^^^^^^^^^^^
 
 First things first, if you haven't already go and sign up for a Stormpath account [here](https://api.stormpath.com/register).
 All requests to the Stormpath REST API must be authenticated with an API Key. To get an API key:
@@ -38,14 +63,15 @@ This will generate your API Key and download it to your computer as an apiKey.pr
 
 
   * Save this file in a secure location, such as your home directory in a hidden .stormpath directory. For example:
-  * Also change the file permissions to ensure only you can read this file. For example, on *nix operating systems:
+  * Also change the file permissions to ensure only you can read this file. For example, on \*nix operating systems:
 
     chmod go-rwx $HOME/.stormpath/apiKey.properties
 
 It might be useful to fist familiarize yourself with the [Stormpath REST API](http://docs.stormpath.com/rest/product-guide/) and the naming used there in.
 
 
-#### Setting up the CLI
+Setting up the CLI
+^^^^^^^^^^^^^^^^^^
 
 To setup the CLI tool run the following command (if the file `$HOME/.stormpath/apiKey.properties` exists it will be used automatically):
 
@@ -68,7 +94,8 @@ the API key and secret:
     API Key written to /home/myuser/.stormpath/cli/apiKey.properties
 
 
-#### Override default settings
+Override default settings
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To override the default setting we just set up in the previous step there are several options available.
 You can pass `-a` or `--apikey` flags to every command:
@@ -91,7 +118,8 @@ If none of the described methods are found then the CLI tool will raise an error
 
     Unable to discover an existing API Key file path or API Key environment variable.
 
-#### Stormpath CLI actions
+Stormpath CLI actions
+^^^^^^^^^^^^^^^^^^^^^
 
 The stormpath cli tool uses the following format:
 
@@ -141,7 +169,8 @@ The cli tool supports outputting JSON as well, so if you wish to get the above o
 
 Piping is supported as well, so a `stormpath list application | less` will result in a tab separated output.
 
-#### Creating an Application
+Creating an Application
+^^^^^^^^^^^^^^^^^^^^^^^
 
 To create an application issue the following command:
 
@@ -182,7 +211,8 @@ For Accounts and Groups:
     -S, --status            optional, the status of the resource
     -j, --json              JSON representation of the resource
 
-#### Update an Application
+Update an Application
+^^^^^^^^^^^^^^^^^^^^^
 
 To update an application we use the `update` action and the `-n` or `--name` flags to specify the application name
 we wish to update:
@@ -200,7 +230,8 @@ For Accounts:
     -e, --email required, account email
 
 
-#### Deleting a Resource
+Deleting a Resource
+^^^^^^^^^^^^^^^^^^^
 
 To delete a resource, a resource must be identified:
 
@@ -223,14 +254,16 @@ Or and Account:
 You are going to be prompted to confirm the deletion. If you wish to avoid getting prompted use the `-F` flag.
 
 
-#### Using raw JSON instead of flags:
+Using raw JSON instead of flags
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you wish you can use raw JSON to represent the Resource your trying to access:
 
     stormpath create application --json='{"name": "My App", "description": "My App created with CLI"}'
 
 
-#### Creating Accounts/Groups
+Creating Accounts/Groups
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 Since Accounts and Groups are tied to Applications and Directories when creating them we need to specify the flags
@@ -280,7 +313,8 @@ And:
 
 Both wil result in the same thing. Identifier flags such as `-e` still require the the dash.
 
-#### Creating Account Store Mappings
+Creating Account Store Mappings
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When creating an application it's possible to create the default account store using the `-R` or `--create-directory` flag. However one might wish to
 be able to add additional groups or directories to an application.
@@ -303,7 +337,8 @@ To update an account store mapping use the update command:
     stormpath update mapping "href_for_desired_mapping" --is-default-group-store true
 
 
-#### Status command
+Status command
+^^^^^^^^^^^^^^
 
 Using the command `stormpath status` you get the following output:
 
