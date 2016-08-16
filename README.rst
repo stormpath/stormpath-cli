@@ -23,6 +23,16 @@ Stormpath CLI
 
 *The official Stormpath command line client.*
 
+This command line tool allows you to completely manage your `Stormpath
+<https://stormpath.com>`_ account.  You can:
+
+- Sign up for Stormpath.
+- Log into your existing Stormpath account.
+- Manage your Stormpath Applications / Directories / Accounts / etc.
+
+If you're using Stormpath to manage your user accounts, this CLI tool gives you
+complete control over the Stormpath service.
+
 
 Install
 -------
