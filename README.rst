@@ -21,7 +21,7 @@ Stormpath CLI
     :alt: stormpath-cli Coverage
     :target: https://coveralls.io/github/stormpath/stormpath-cli?branch=master
 
-A command-line client for `Stormpath <https://stormpath.com>`_.
+*The official `Stormpath <https://stormpath.com>`_ command line client.*
 
 
 Install
