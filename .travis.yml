@@ -8,3 +8,6 @@ install:
 - pip install -r requirements.txt
 script:
 - python setup.py test
+env:
+  global:
+    secure: EmmooMDlYddJY1UlfN2kG0d6N0oeRrthKi4ABc3tDdUJYvAncUsI0ahKVEXmjslg1YdwG32SNCQhoRO3QjYPZ4IlwM+omB5ZZurOw94a6JRW67wyLNpM56wJoSMriVgcsR5y/bidUgGRe+MdwUNlRexvHcRiEVAck9gTkCCluB0=
