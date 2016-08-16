@@ -52,6 +52,9 @@ setup(
         'stormpath>=1.2.4',
         'termcolor>=1.1.0',
     ],
+    extras_require = {
+        'test': ['codacy-coverage', 'mock', 'python-coveralls', 'pytest', 'pytest-cov', 'sphinx'],
+    },
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
