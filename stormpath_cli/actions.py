@@ -61,7 +61,6 @@ ATTRIBUTE_MAPS = {
     ),
 }
 
-
 REQUIRED_ATTRIBUTES = {
     AccountList: dict(
         email = '--email',
@@ -83,7 +82,6 @@ REQUIRED_ATTRIBUTES = {
         account_store = '--href',
     )
 }
-
 
 EXTRA_MAPS = {
     ApplicationList: dict(
