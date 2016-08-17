@@ -2,6 +2,8 @@ import unittest
 import tempfile
 import os
 
+from os.path import realpath
+
 try:
     from mock import create_autospec, MagicMock
 except ImportError:
@@ -22,6 +24,7 @@ class TestAuth(unittest.TestCase):
 
     def test_init_auth_handles_the_apikeyfile_flag_properly(self):
         fd, tmpfile = tempfile.mkstemp()
+        tmpfile = realpath(tmpfile)
         args = {'--apikeyfile': tmpfile}
         ret = auth.init_auth(args)
         self.assertEquals(ret, {'api_key_file_location': tmpfile})
@@ -38,6 +41,7 @@ class TestAuth(unittest.TestCase):
 
     def test_init_auth_handles_the_environment_variables_with_apikeyfile(self):
         fd, tmpfile = tempfile.mkstemp()
+        tmpfile = realpath(tmpfile)
         os.environ['STORMPATH_APIKEY_FILE'] = tmpfile
         args = {}
         ret = auth.init_auth(args)
@@ -47,6 +51,7 @@ class TestAuth(unittest.TestCase):
 
     def test_that_init_auth_will_find_the_users_home_dir_and_apikeyfile(self):
         fd, tmpfile = tempfile.mkstemp()
+        tmpfile = realpath(tmpfile)
         auth.get_config_path = lambda _: tmpfile
         args = {}
         ret = auth.init_auth(args)
