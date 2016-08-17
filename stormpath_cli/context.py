@@ -9,15 +9,13 @@ from .util import get_config_path, get_config_file, store_config_file, delete_co
 def get_context_dict(quiet=True):
     """Read the current Application/Directory context from the
     cli context file."""
-
     data = get_config_file('context.properties')
     if not data or '=' not in data:
         return {}
 
     if not quiet:
         log = get_logger()
-        log.info("Using context from file %s." %
-            get_config_path('context.properties'))
+        log.info('Using context from file {}.'.format(get_config_path('context.properties')))
 
     flag, value = data.split('=', 1)
     return {flag.strip(): value.strip()}
@@ -26,10 +24,10 @@ def get_context_dict(quiet=True):
 def _display_context():
     """Helper function for printing the current context"""
     log = get_logger()
-
     ctx = get_context_dict(quiet=True)
+
     if not ctx:
-        log.info("No current context.")
+        log.info('No current context.')
         return
 
     flag, value = ctx.items()[0]
@@ -38,24 +36,24 @@ def _display_context():
     elif flag == '--in-directory':
         typename = 'directory'
     else:
-        raise ValueError("Unrecognized context.")
+        raise ValueError('Unrecognized context.')
 
-    log.info("Current context set to the %s '%s'." % (typename, value))
-    log.info("Account / Groups actions are configured to target '%s'." %
-        value)
+    log.info("Current context set to the %s '{}'.".format(typename, value))
+    log.info("Account / Groups actions are configured to target '{}'.".format(value))
 
 
 def set_context(collection, args):
     """Set the context to the requested application/directory and
     store it to the context file"""
     from .actions import _gather_resource_attributes
+
     args = _gather_resource_attributes(collection, args)
     value = args.get('--name') or args.get('--href')
     if not value:
-        raise ValueError("Resource name or href is required.")
+        raise ValueError('Resource name or href is required.')
 
     if value.find('*') != -1:
-        raise ValueError("Cannot use wildcard syntax when setting context.")
+        raise ValueError('Cannot use wildcard syntax when setting context.')
 
     # this verifies that the provided argument actually is a name
     res = get_resource(collection, 'name', value)
@@ -65,11 +63,11 @@ def set_context(collection, args):
     elif isinstance(collection, DirectoryList):
         flag = '--in-directory'
     else:
-        raise ValueError("Context can only be set to Application or "
-            "Directory resources")
+        raise ValueError('Context can only be set to Application or Directory resources.')
 
-    f = store_config_file('context.properties', '%s = %s\n' % (flag, res.href))
+    f = store_config_file('context.properties', '{} = {}\n'.format(flag, res.href))
     _display_context()
+
     return f
 
 
@@ -80,6 +78,7 @@ def delete_context(args):
     except OSError:
         log.error('No context found.')
         return False
+
     log.info('Context cleared.')
     return ret
 

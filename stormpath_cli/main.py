@@ -95,10 +95,7 @@ from stormpath_cli.actions import SET_ACTION, STATUS_ACTION
 from . import __version__ as version
 
 
-USER_AGENT = 'stormpath-cli/%s (python %s)' % (
-    version,
-    '%s.%s.%s' % (vi.major, vi.minor, vi.micro),
-)
+USER_AGENT = 'stormpath-cli/{} (python {})'.format(version, '{}.{}.{}'.format(vi.major, vi.minor, vi.micro))
 
 
 def main():
@@ -109,11 +106,8 @@ def main():
     log = setup_output(arguments.get('--verbose'))
 
     arguments.update(get_context_dict())
-
     arguments, resource, action = find_non_dash_arguments_and_default_action(arguments, resource, action)
-
     arguments = properly_support_boolean_values(arguments)
-
     arguments = check_primary_identifier_without_flags(arguments, resource, action)
 
     if not action:
@@ -125,8 +119,7 @@ def main():
         return -1
 
     if action not in AVAILABLE_ACTIONS:
-        log.error("Unknown action '%s'. See 'stormpath --help' for list of "
-            "available actions." % action)
+        log.error("Unknown action '{}'. See 'stormpath --help' for list of available actions.".format(action))
         return -1
 
     if action in LOCAL_ACTIONS:
@@ -134,16 +127,14 @@ def main():
 
     if not resource and action != STATUS_ACTION:
         if action == SET_ACTION:
-            log.error("A resource type is required. Available resources for the set command are: "
-                    "application, directory. Please see 'stormpath --help'")
+            log.error("A resource type is required. Available resources for the set command are: application, directory. Please see 'stormpath --help'")
             return -1
-        log.error("A resource type is required. Available resources: %s. "
-            "Please see 'stormpath --help'" % ", ".join(sorted(AVAILABLE_RESOURCES.keys())))
+
+        log.error("A resource type is required. Available resources: {}. Please see 'stormpath --help'".format(', '.join(sorted(AVAILABLE_RESOURCES.keys()))))
         return -1
 
     if resource not in AVAILABLE_RESOURCES and action != STATUS_ACTION:
-        log.error("Unknown resource type '%s'. See 'stormpath --help' for "
-            "list of available resource types." % resource)
+        log.error("Unknown resource type '{}'. See 'stormpath --help' for list of available resource types.".format(resource))
         return -1
 
     try:

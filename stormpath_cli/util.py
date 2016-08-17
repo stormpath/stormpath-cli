@@ -7,7 +7,8 @@ def get_root_path():
     """Helper function for getting the root path."""
     drive = splitdrive(sys.executable)[0]
     if drive:
-        return '%s\\' % drive
+        return '{}\\'.format(drive)
+
     return '/'
 
 
@@ -36,6 +37,7 @@ def store_config_file(name, data):
 def delete_config_file(name):
     fpath = get_config_path(name)
     unlink(fpath)
+
     return True
 
 
@@ -56,6 +58,7 @@ def strip_equal_sign(arguments):
         if v and isinstance(v, str) and (k.startswith('--') or k.startswith('-')):
             arguments.update({k: v.lstrip('=')})
             v.lstrip('=')
+
     return arguments
 
 
@@ -87,12 +90,13 @@ def check_primary_identifier_without_flags(arguments, resource, action):
     from stormpath.client import Client
 
     for i, attr in enumerate(arguments.get('<attributes>')):
-        if attr.find("=") == -1:
+        if attr.find('=') == -1:
             if attr.startswith(Client.BASE_URL):
                 arguments['<attributes>'][i] = 'href=' + attr
             else:
                 primary_attr = 'email' if resource.find('account') != -1 else 'name'
                 arguments['<attributes>'][i] = primary_attr + "=" + attr
+
     return arguments
 
 
@@ -103,6 +107,7 @@ def properly_support_boolean_values(arguments):
 
     arguments['--is-default-account-store'] = _txt_to_bool(arguments.get('--is-default-account-store'))
     arguments['--is-default-group-store'] = _txt_to_bool(arguments.get('--is-default-group-store'))
+
     return arguments
 
 
@@ -118,6 +123,7 @@ def which(program):
         for path in environ['PATH'].split(pathsep):
             path = path.strip('"')
             exe_file = join(path, program)
+
             if is_exe(exe_file):
                 return exe_file
 

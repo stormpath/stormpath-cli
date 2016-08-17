@@ -10,7 +10,7 @@ def get_resource(coll, id_name, id_value):
     if len(coll):
         return coll[0]
     else:
-        raise ValueError("The requested resource does not exist.")
+        raise ValueError('The requested resource does not exist.')
 
 
 def get_resource_data(resource):
@@ -23,6 +23,7 @@ def get_resource_data(resource):
         data.pop('sp_http_status')
     except:
         pass
+
     return data
 
 
@@ -39,8 +40,7 @@ def _get_context(client, args):
     elif d:
         return get_resource(client.directories, 'name', d)
     else:
-        raise ValueError("Set the context with --in-application, "
-            "--in-directory or 'set'")
+        raise ValueError("Set the context with --in-application, --in-directory or 'set'")
 
 
 def get_accounts(client, args):

@@ -1,6 +1,7 @@
 from __future__ import print_function
-import json
+
 from getpass import getpass
+from json import dumps, loads
 from os import getcwd
 from os.path import basename
 from subprocess import call
@@ -107,8 +108,10 @@ RESOURCE_PRIMARY_ATTRIBUTES = {
 def _prompt_if_missing_parameters(coll, args, only_primary=False):
     required_coll_args = REQUIRED_ATTRIBUTES[type(coll)]
     all_coll_args = ATTRIBUTE_MAPS[type(coll)]
+
     if 'href' in all_coll_args:
         all_coll_args.pop('href')
+
     supplied_required_arguments = []
     for arg in required_coll_args.values():
         if arg in args and args[arg]:
@@ -121,17 +124,20 @@ def _prompt_if_missing_parameters(coll, args, only_primary=False):
     if remaining_coll_args:
         get_logger().info('Please enter the following information.  Fields with an asterisk (*) are required.')
         get_logger().info('Fields without an asterisk are optional.')
+
         for arg in sorted(remaining_coll_args):
             if arg == 'password':
                 msg = args['--email']
             else:
                 required = '*' if arg in required_coll_args.keys() else ''
                 msg = '%s%s' % (arg.replace('_', ' ').capitalize(), required)
+
             v = prompt(arg, msg)
             args[all_coll_args[arg]] = v
         if type(coll) in EXTRA_MAPS:
             v = prompt(None, 'Create a directory for this application?[Y/n]')
             args['--create-directory'] = v != 'n'
+
     return args
 
 
@@ -141,16 +147,19 @@ def _specialized_query(coll, args, maps):
     json_rep = args.get('--json')
     if json_rep:
         try:
-            return json.loads(json_rep)
+            return loads(json_rep)
         except ValueError as e:
             raise ValueError("Error parsing JSON: %s" % e)
+
     ctype = type(coll)
     pmap = maps.get(ctype, {})
     params = {}
+
     for name, opt in pmap.items():
         optval = args.get(opt)
         if optval:
             params[name] = optval
+
     return params
 
 
@@ -159,10 +168,11 @@ def _primary_attribute(coll, attrs):
     -n or --name are present. Each Resource can have 2 primary attributes name/email
     and the special attribute href"""
     attr_names = RESOURCE_PRIMARY_ATTRIBUTES[type(coll)]
-
     attr_values = [attrs.get(n) for n in attr_names if attrs.get(n)]
+
     if not any(attr_values):
-        raise ValueError("Required attribute '%s' not specified." % ' or '.join(attr_names))
+        raise ValueError("Required attribute '{}' not specified.".format(' or '.join(attr_names)))
+
     return attr_names[0], attr_values[0]
 
 
@@ -172,12 +182,16 @@ def _gather_resource_attributes(coll, args):
 
     for attr in args.get('<attributes>', []):
         if '=' not in attr:
-            raise ValueError("Unknown resource attribute: " + attr)
+            raise ValueError('Unknown resource attribute: {}'.format(attr))
+
         name, value = attr.split('=', 1)
         name = name.replace('-', '_')
+
         if name not in attrs:
-            raise ValueError("Unknown resource attribute: " + name)
+            raise ValueError('Unknown resource attribute: {}'.format(name))
+
         args[attrs[name]] = value
+
     return args
 
 
@@ -185,16 +199,17 @@ def _add_resource_to_groups(resource, args):
     """Helper function for adding a resource to a group.
     Specifically this is only used for adding Accounts to Groups."""
     account_groups = args.get('--groups')
+
     if account_groups and hasattr(resource, 'add_group'):
         groups = [g.strip() for g in account_groups.split(',')]
         for group in groups:
             resource.add_group(group)
+
         return resource
 
 
 def _check_account_store_mapping(coll, attrs):
     """Takes care of special create case for account store mappings"""
-
     if isinstance(coll, AccountStoreMappingList):
         attrs['application'] = {'href': attrs.get('application')}
         attrs['account_store'] = {'href': attrs.get('account_store')}
@@ -206,9 +221,11 @@ def list_resources(coll, args):
     """List action: Lists the requested Resource collection."""
     args = _gather_resource_attributes(coll, args)
     q = _specialized_query(coll, args, SEARCH_ATTRIBUTE_MAPS)
+
     if not isinstance(coll, AccountStoreMappingList):
         if q:
             coll = coll.query(**q)
+
     for r in coll:
         yield get_resource_data(r)
 
@@ -240,7 +257,9 @@ def update_resource(coll, args):
     for name, value in attrs.items():
         if name == attr_name or name == 'href':
             continue
+
         setattr(resource, name, value)
+
     resource.save()
     _add_resource_to_groups(resource, args)
 
@@ -264,14 +283,16 @@ def delete_resource(coll, args):
         pass
 
     if not force:
-        print("Are you sure you want to delete the following resource?")
-        print(json.dumps(data, indent=2, sort_keys=True))
+        print('Are you sure you want to delete the following resource?')
+        print(dumps(data, indent=2, sort_keys=True))
+
         resp = input('Delete this resource [y/N]? ')
         if resp.upper() != 'Y':
             return
 
     resource.delete()
-    get_logger().info("Resource deleted.")
+    get_logger().info('Resource deleted.')
+
     if force:
         # If we're running in a script, it's useful to log exactly which
         # resource was deleted (update/create do the same)
@@ -392,6 +413,7 @@ def register(args):
         if resp.status_code != 200:
             print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying Account request...')
+
             sleep(1)
             continue
 
@@ -401,6 +423,7 @@ def register(args):
         if resp.status_code != 201:
             print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying API key creation...')
+
             sleep(1)
             continue
 
@@ -410,6 +433,7 @@ def register(args):
         if resp.status_code != 200:
             print(colored('\nERROR: {}\n'.format(resp.json()['message']), 'red'))
             print('Retrying API key fetching...')
+
             sleep(1)
             continue
 
@@ -469,7 +493,6 @@ AVAILABLE_ACTIONS = {
     'register': register,
     'deploy': deploy,
 }
-
 
 LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help', 'deploy', 'init', 'run')
 DEFAULT_ACTION = 'list'
