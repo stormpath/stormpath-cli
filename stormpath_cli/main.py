@@ -83,8 +83,7 @@ from docopt import docopt
 from stormpath.client import Client
 from stormpath.error import Error as StormpathError
 
-from stormpath_cli.actions import AVAILABLE_ACTIONS, LOCAL_ACTIONS, \
-    DEFAULT_ACTION
+from stormpath_cli.actions import AVAILABLE_ACTIONS, LOCAL_ACTIONS
 from stormpath_cli.auth import init_auth
 from stormpath_cli.context import get_context_dict
 from stormpath_cli.resources import AVAILABLE_RESOURCES

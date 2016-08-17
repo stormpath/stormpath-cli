@@ -7,9 +7,9 @@ except:
 import unittest
 
 try:
-    from mock import create_autospec, MagicMock, call
+    from mock import MagicMock, call
 except ImportError:
-    from unittest.mock import create_autospec, MagicMock, call
+    from unittest.mock import MagicMock, call
 
 from stormpath_cli import output
 

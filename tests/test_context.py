@@ -1,11 +1,9 @@
 import unittest
-import tempfile
-import os
 
 try:
-    from mock import create_autospec, MagicMock
+    from mock import MagicMock
 except ImportError:
-    from unittest.mock import create_autospec, MagicMock
+    from unittest.mock import MagicMock
 
 from stormpath_cli import context
 from stormpath.resources.application import ApplicationList

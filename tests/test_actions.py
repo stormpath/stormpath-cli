@@ -1,9 +1,9 @@
 import unittest
 
 try:
-    from mock import create_autospec, MagicMock
+    from mock import MagicMock
 except ImportError:
-    from unittest.mock import create_autospec, MagicMock
+    from unittest.mock import MagicMock
 
 from stormpath_cli import actions
 from stormpath.resources.account import AccountList

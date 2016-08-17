@@ -1,5 +1,4 @@
 from glob import glob
-from json import dumps
 from os import chdir
 from subprocess import call
 
