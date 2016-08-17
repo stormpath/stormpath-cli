@@ -1,4 +1,4 @@
-from project import Project
+from .project import Project
 
 
 class NodeProject(Project):

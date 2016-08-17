@@ -22,7 +22,7 @@ from .context import set_context, show_context, delete_context
 from .status import show_status
 from .output import get_logger, prompt
 from .resources import get_resource, get_resource_data
-from projects import Project
+from .projects import Project
 from .util import store_config_file, which
 
 
