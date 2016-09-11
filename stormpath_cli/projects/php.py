@@ -3,7 +3,7 @@ from subprocess import call
 from termcolor import colored
 
 from ..util import which
-from project import Project
+from .project import Project
 
 
 class PHPProject(Project):
