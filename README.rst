@@ -371,3 +371,32 @@ Copyright © 2012, 2013, 2014 Stormpath, Inc. and contributors.
 This project is licensed under the [Apache 2.0 Open Source License](http://www.apache.org/licenses/LICENSE-2.0).
 
 For additional information, please see the full [Project Documentation](https://www.stormpath.com/docs/python/product-guide).
+
+
+Contributing
+^^^^^^^^^^^^
+
+Contributing to the Stormpath CLI project is easy!
+
+Here's how you should do it:
+
+- Fork this repository.
+- Create a new branch based on the master branch, which has a relevant name.  For
+  instance, if you're going to add a feature, you might say: ``git checkout -b
+  some-new-feature``.
+- Write your code!
+- Open a pull request back to the master branch of this main project.
+
+To install this project locally for testing, you should use ``pip``::
+
+    $ pip install -e .[test]
+
+This will make this command line program runnable locally while you're working
+on the project.
+
+To run the project tests, you can do the following::
+
+    $ python setup.py test
+
+While tests are encouraged for any submissions you make, if you don't include
+them I'll just take care of it myself: so no worries =)
