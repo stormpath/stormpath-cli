@@ -1,3 +1,11 @@
+Version 0.1.2
+-------------
+
+**Not yet released.**
+
+- Adding contributing docs.
+
+
 Version 0.1.1
 -------------
 
