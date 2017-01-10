@@ -46,10 +46,10 @@ setup(
     keywords = ['stormpath', 'client', 'cli', 'security', 'authentication'],
     license = 'Apache 2.0',
     install_requires = [
-        'docopt>=0.6.1',
-        'pyquery>=1.2.13',
-        'requests>=2.10.0',
-        'stormpath>=1.2.4',
+        'docopt>=0.6.2',
+        'pyquery>=1.2.17',
+        'requests>=2.12.4',
+        'stormpath>=2.5.1',
         'termcolor>=1.1.0',
     ],
     extras_require = {
