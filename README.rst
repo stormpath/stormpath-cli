@@ -21,7 +21,6 @@ Stormpath CLI
     :alt: stormpath-cli Coverage
     :target: https://coveralls.io/github/stormpath/stormpath-cli?branch=master
 
-*The official Stormpath command line client.*
 
 This command line tool allows you to completely manage your `Stormpath
 <https://stormpath.com>`_ account.  You can:
@@ -33,22 +32,25 @@ This command line tool allows you to completely manage your `Stormpath
 If you're using Stormpath to manage your user accounts, this CLI tool gives you
 complete control over the Stormpath service.
 
+
 Install
 -------
 
 If you're using a Mac, you can install this CLI tool via
 `Homebrew <http://brew.sh/>`_::
 
-  brew install stormpath-cli
+    brew install stormpath-cli
 
 If you're using Linux, OSX, or Windows, and prefer to install the library via
 Python and `pip <http://pip.readthedocs.org/en/stable/>`_, you can do so via::
 
-  # NOTE: This may require `sudo` depending on your Python setup.
-  pip install stormpath-cli
+    # NOTE: This may require `sudo` depending on your Python setup.
+    pip install stormpath-cli
+
 
 Usage
 -----
+
 
 Get an API Key
 ^^^^^^^^^^^^^^
