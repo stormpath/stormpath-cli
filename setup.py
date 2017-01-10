@@ -33,8 +33,8 @@ setup(
     include_package_data = True,
 
     # Author information:
-    author = 'Stormpath Inc.',
-    author_email = 'python@stormpath.com',
+    author = 'Randall Degges',
+    author_email = 'randall@stormpath.com',
 
     # Metadata:
     keywords = ['stormpath', 'client', 'cli', 'security', 'authentication', 'authorization'],
