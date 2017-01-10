@@ -1,11 +1,9 @@
 from subprocess import call
-from sys import exit, version_info
+from sys import exit
 
 from setuptools import Command, find_packages, setup
+
 from stormpath_cli import __version__ as version
-
-
-PY_VERSION = version_info[:2]
 
 
 class RunTests(Command):
