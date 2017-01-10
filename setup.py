@@ -37,7 +37,7 @@ setup(
     author_email = 'python@stormpath.com',
 
     # Metadata:
-    keywords = ['stormpath', 'client', 'cli', 'security', 'authentication'],
+    keywords = ['stormpath', 'client', 'cli', 'security', 'authentication', 'authorization'],
     license = 'Apache 2.0',
     install_requires = [
         'docopt>=0.6.2',
