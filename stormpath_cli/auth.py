@@ -9,23 +9,25 @@ from .util import get_config_path, store_config_file
 
 
 def init_auth(args, quiet=True):
-    """Check's what authentication method to use for talking to the
-    Stormpath API.
+    """
+    Parse CLI arguments to figure out where the Stormpath credentials are
+    located. Since we can authenticate to Stormpath in a number of ways, this
+    step is necessary.
 
-    Auth methods by descending precedence:
+    Here's where we'll check for credentials in by descending precedence:
 
-        apikey flag - Highest precedence
-        apikeyfile flag - Evaluated if no apikey flag is set
-        env variables - Evaluated if no flags are set
-        apiKey.properties file in HOME directory - lowest precedence, used if no
-            other method are specified.
+    - apikey flag - Highest precedence.
+    - apikeyfile flag - Evaluated if no apikey flag is set.
+    - env variables - Evaluated if no flags are set.
+    - apiKey.properties file in HOME directory - Lowest precedence, used if no
+      other method are specified.
     """
     log = get_logger()
 
     api_key = args.get('--apikey')
     if api_key:
         if ':' not in api_key:
-            raise ValueError("API Key should be specified in id:secret format")
+            raise ValueError('API Key should be specified in id:secret format')
 
         key_id, key_secret = api_key.split(':', 1)
         return dict(id=key_id, secret=key_secret)
