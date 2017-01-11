@@ -315,7 +315,7 @@ def init(args):
         auth_args = init_auth(args)
         client = Client(user_agent=USER_AGENT, **auth_args)
     except ValueError as ex:
-        log.error(str(ex))
+        get_logger().error(str(ex))
         exit(1)
 
     type = args.get('<resource>')
