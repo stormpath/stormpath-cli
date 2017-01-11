@@ -486,6 +486,7 @@ def deploy(args):
     print(colored('\nYour Stormpath application has been successfully deployed to Heroku! Run `heroku open` to view it in a browser!', 'yellow'))
 
 
+#: A dictionary of available CLI actions that a user can take.
 AVAILABLE_ACTIONS = {
     'list': list_resources,
     'create': create_resource,
@@ -502,7 +503,14 @@ AVAILABLE_ACTIONS = {
     'deploy': deploy,
 }
 
+#: Actions which can be ran locally.
 LOCAL_ACTIONS = ('register', 'setup', 'context', 'unset', 'help', 'deploy', 'init', 'run')
+
+#: The default action to use if none is specified.
 DEFAULT_ACTION = 'list'
+
+#: The action that sets a value.
 SET_ACTION = 'set'
+
+#: The action which provides information about the status of a resource.
 STATUS_ACTION = 'status'
