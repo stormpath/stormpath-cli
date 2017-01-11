@@ -21,6 +21,12 @@ def init_auth(args, quiet=True):
     - env variables - Evaluated if no flags are set.
     - apiKey.properties file in HOME directory - Lowest precedence, used if no
       other method are specified.
+
+    :param dict args: The CLI arguments.
+    :param bool quiet: Should we suppress console output? Default True.
+    :rtype: dict
+    :returns: A dictionary with authentication information.
+    :raises ValueError: If no credentials can be found.
     """
     log = get_logger()
 
@@ -85,8 +91,10 @@ def init_auth(args, quiet=True):
 
 
 def _ask_for_credentials():
-    """Helper function used by the setup action to prompt the user
-    for auth credentials."""
+    """
+    Helper function used by the setup action to prompt the user for auth
+    credentials.
+    """
     print('Please input your API Key ID and API Key Secret.')
     print('(visit http://docs.stormpath.com/rest/quickstart/#get-an-api-key for more information)')
 
