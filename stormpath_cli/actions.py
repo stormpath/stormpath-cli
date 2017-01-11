@@ -196,12 +196,20 @@ def _gather_resource_attributes(coll, args):
 
 
 def _add_resource_to_groups(resource, args):
-    """Helper function for adding a resource to a group.
-    Specifically this is only used for adding Accounts to Groups."""
-    account_groups = args.get('--groups')
+    """
+    Helper function for adding a resource to a group.  Right now, this is only
+    specifically used when adding an Account to a Group.
 
-    if account_groups and hasattr(resource, 'add_group'):
-        groups = [g.strip() for g in account_groups.split(',')]
+    :param obj resource: The Stormapth resource which we'll be adding the
+        specified Groups to.
+    :param dict args: The CLI arguments.
+    :rtype: obj
+    :returns: The original resource object, with all Groups added.
+    """
+    arg_groups = args.get('--groups')
+
+    if arg_groups and hasattr(resource, 'add_group'):
+        groups = [g.strip() for g in arg_groups.split(',')]
         for group in groups:
             resource.add_group(group)
 
