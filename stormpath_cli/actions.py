@@ -204,7 +204,7 @@ def _add_resource_to_groups(resource, args):
         specified Groups to.
     :param dict args: The CLI arguments.
     :rtype: obj
-    :returns: The original resource object, with all Groups added.
+    :returns: The original resource object, with all Groups added -- or None.
     """
     arg_groups = args.get('--groups')
 
