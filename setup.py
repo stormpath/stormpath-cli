@@ -47,7 +47,7 @@ setup(
         'termcolor>=1.1.0',
     ],
     extras_require = {
-        'test': ['codacy-coverage', 'mock', 'python-coveralls', 'pytest', 'pytest-cov', 'sphinx'],
+        'test': ['Sphinx==1.3.6', 'codacy-coverage', 'mock', 'python-coveralls', 'pytest', 'pytest-cov'],
     },
     classifiers = [
         'Development Status :: 3 - Alpha',
