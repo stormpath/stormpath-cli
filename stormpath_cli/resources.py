@@ -1,14 +1,14 @@
 from stormpath.client import Client
 
 
-def get_resource(coll, id_name, id_value):
+def get_resource(collection, id_name, id_value):
     """Makes sure a requested Resource actually exists."""
     if id_value.startswith(Client.BASE_URL):
-        return coll.get(id_value)
+        return collection.get(id_value)
 
-    coll = coll.query(**{id_name: id_value})
-    if len(coll):
-        return coll[0]
+    collection = collection.query(**{id_name: id_value})
+    if len(collection):
+        return collection[0]
     else:
         raise ValueError('The requested resource does not exist.')
 
