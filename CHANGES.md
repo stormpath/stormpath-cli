@@ -1,9 +1,14 @@
 Version 0.1.2
 -------------
 
-**Not yet released.**
+**Released January 12, 2017.**
 
 - Adding contributing docs.
+- Fixing broken logging code.
+- Adding some RST markup.
+- Adding support for Python 3.3+.
+- Fixing tests for cross-platform.
+- Rewriting travis CI testing.
 
 
 Version 0.1.1
