@@ -1,3 +1,12 @@
+Version 0.1.3
+-------------
+
+**Released January 23, 2017.**
+
+- Fixing manifest.
+- Pinning Sphinx versions.
+
+
 Version 0.1.2
 -------------
 
